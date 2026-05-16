@@ -11,16 +11,28 @@ PREFERENCES_PATH = Path("preferences.json")
 
 DEFAULT_PREFERENCES: dict[str, Any] = {
     "interest_threshold": 68,
-    "daily_limit": 10,
+    "daily_limit": 5,
     "weekly_limit": 10,
     "ai_highlights_limit": 10,
     "home_base": "Copenhagen Central Station",
+    "budget": {
+        "ideal_min": 2_000_000,
+        "ideal_max": 2_500_000,
+        "move_in_ready_max": 3_000_000,
+        "renovation_max": 2_000_000,
+        "track_over_budget_price_drops": True,
+    },
+    "house": {
+        "bedrooms_min": 3,
+        "rooms_min_conservative": 4,
+        "energy_rating_matters": False,
+    },
     "filters": {
         "price_min": None,
         "price_max": None,
         "size_min": None,
         "size_max": None,
-        "rooms_min": None,
+        "rooms_min": 3,
         "lot_size_min": None,
         "days_on_market_max": None,
         "price_per_m2_max": None,
@@ -34,6 +46,15 @@ DEFAULT_PREFERENCES: dict[str, Any] = {
         "description": (
             "Vi leder efter et indbydende sommerhus på Sjælland, gerne nær vand "
             "eller natur, med ro, privatliv, god familiebrug og fornuftig pris."
+        ),
+        "wishes_note": (
+            "Vi leder efter et sommerhus på Sjælland og brofaste øer, uden færge. "
+            "Det skal føles personligt, roligt og tæt på vand eller natur, men ikke så isoleret "
+            "at indkøb og service bliver besværligt. Ideelt 2-2,5 mio. kr.; maks 3 mio. kr. "
+            "hvis det er indflytningsklart, og renoveringsprojekter kan være interessante op til ca. 2 mio. kr. "
+            "Vi vil gerne have mindst 3 rigtige soveværelser, og offentlig transport fra København må gerne "
+            "være omkring 2 timer — lidt over er en advarsel, ikke et automatisk nej. Agenten må være opinionated "
+            "og sige nej til områder eller huse, der ikke føles rigtige."
         ),
         "positive_keywords": [
             "strand",
@@ -57,8 +78,12 @@ DEFAULT_PREFERENCES: dict[str, Any] = {
     },
     "travel": {
         "max_public_transport_minutes": 120,
+        "warn_public_transport_minutes": 135,
         "ideal_car_minutes_min": 60,
         "ideal_car_minutes_max": 90,
+    },
+    "services": {
+        "max_supermarket_car_minutes": 20,
     },
     "signals": {
         "near_water": True,
@@ -66,7 +91,7 @@ DEFAULT_PREFERENCES: dict[str, Any] = {
         "privacy": True,
         "nature": True,
         "family_use": True,
-        "rental_potential": True,
+        "rental_potential": "bonus",
         "renovation_potential": "state_not_penalize",
         "motivated_seller_weight": "moderate",
     },

@@ -354,7 +354,7 @@ def list_active(conn: sqlite3.Connection, filters: dict[str, Any]) -> list[dict[
         FROM listings
         WHERE {" AND ".join(clauses)}
         ORDER BY has_price_drop DESC, asking_price ASC
-        LIMIT 1000
+        LIMIT 10000
         """,
         params,
     ).fetchall()

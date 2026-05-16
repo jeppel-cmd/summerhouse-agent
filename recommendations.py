@@ -7,6 +7,7 @@ import statistics
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
+import area_research
 import flood_risk
 import preferences as preference_store
 
@@ -45,6 +46,9 @@ def text_blob(listing: dict[str, Any], raw: dict[str, Any]) -> str:
         raw.get("ouAddress"),
         raw.get("cleanStreet"),
         raw.get("street"),
+        raw.get("description"),
+        raw.get("descriptionBody"),
+        raw.get("remarks"),
     ]
     return " ".join(str(part).lower() for part in parts if part)
 
@@ -119,8 +123,8 @@ def location_score(listing: dict[str, Any], prefs: dict[str, Any], reasons: list
         return 45
 
     if ferry_warning(listing):
-        reasons.append("Mulig færge-afhængig beliggenhed, så den markeres som advarsel.")
-        return 20
+        reasons.append("Færge-afhængig beliggenhed (fx Bornholm) passer ikke til kriterierne.")
+        return 5
     if 4000 <= postal <= 4999:
         reasons.append("Ligger i Region Sjælland og matcher den ønskede geografi.")
         return 95
@@ -147,15 +151,18 @@ def travel_score(listing: dict[str, Any], reasons: list[str]) -> tuple[float, di
         reasons.append("Rejseproxy ser stærk ud fra København H.")
         return 95, estimates
     if public_minutes <= 120 and car_minutes <= 100:
-        return 82, estimates
-    if public_minutes <= 145 and car_minutes <= 115:
-        reasons.append("Rejseproxy er mulig, men nærmer sig grænsen for en lang tur.")
-        return 62, estimates
+        return 84, estimates
+    if public_minutes <= 135 and car_minutes <= 115:
+        reasons.append("Rejseproxy er lidt over 2 timer med offentlig transport, så den markeres som advarsel frem for at blive sorteret fra.")
+        return 66, estimates
+    if public_minutes <= 150 and car_minutes <= 125:
+        reasons.append("Rejseproxy er over 2 timer med offentlig transport og bør tjekkes manuelt.")
+        return 48, estimates
     if public_minutes <= 170:
         reasons.append("Rejseproxy er sandsynligvis over ønsket om maks. to timer med offentlig transport.")
-        return 40, estimates
+        return 35, estimates
     reasons.append("Rejseproxy ser for lang ud fra København H.")
-    return 18, estimates
+    return 12, estimates
 
 
 def nature_water_score(listing: dict[str, Any], raw: dict[str, Any], reasons: list[str]) -> float:
@@ -259,6 +266,116 @@ def value_score(listing: dict[str, Any], medians: dict[str, float], reasons: lis
     return 25
 
 
+def renovation_signal(listing: dict[str, Any], raw: dict[str, Any]) -> bool:
+    blob = text_blob(listing, raw)
+    terms = (
+        "renovering",
+        "renoveringsprojekt",
+        "modernisering",
+        "istandsættelse",
+        "istandsaettelse",
+        "håndværkertilbud",
+        "haandvaerkertilbud",
+        "kærlig hånd",
+        "kaerlig haand",
+        "trænger",
+        "traenger",
+    )
+    return any(term in blob for term in terms)
+
+
+def price_fit_score(listing: dict[str, Any], prefs: dict[str, Any], raw: dict[str, Any], reasons: list[str]) -> float:
+    price = listing.get("asking_price")
+    if price in ("", None):
+        reasons.append("Pris mangler, så budgetmatch vurderes forsigtigt.")
+        return 45
+    price = float(price)
+    budget = prefs.get("budget", {})
+    ideal_min = float(budget.get("ideal_min") or 2_000_000)
+    ideal_max = float(budget.get("ideal_max") or 2_500_000)
+    move_in_ready_max = float(budget.get("move_in_ready_max") or 3_000_000)
+    renovation_max = float(budget.get("renovation_max") or 2_000_000)
+    is_renovation = renovation_signal(listing, raw)
+
+    if ideal_min <= price <= ideal_max:
+        reasons.append("Pris ligger i idealbudgettet på ca. 2-2,5 mio. kr.")
+        return 95
+    if is_renovation and price <= renovation_max:
+        reasons.append("Renoveringsprojekt under ca. 2 mio. kr., som kan være interessant hvis standen matcher prisen.")
+        return 84
+    if price < ideal_min:
+        if is_renovation:
+            reasons.append("Billigt renoveringsspor, men standen bør tjekkes grundigt.")
+            return 78
+        reasons.append("Pris ligger under idealbudgettet og kan være stærk værdi, hvis huset ellers passer.")
+        return 88
+    if price <= move_in_ready_max:
+        reasons.append("Pris er under maks. 3 mio. kr., men over idealbudgettet.")
+        return 68
+    if price <= move_in_ready_max * 1.15:
+        reasons.append("Pris er over 3 mio. kr.; kun interessant som prisfaldskandidat eller hvis alt andet er meget stærkt.")
+        return 34
+    reasons.append("Pris er klart over 3 mio. kr. og bør kun overvåges for større prisfald.")
+    return 15
+
+
+def bedroom_score(listing: dict[str, Any], prefs: dict[str, Any], raw: dict[str, Any], reasons: list[str]) -> float:
+    required_bedrooms = int((prefs.get("house", {}) or {}).get("bedrooms_min") or 3)
+    explicit_bedrooms = raw.get("bedrooms") or raw.get("numberOfBedrooms") or raw.get("bedroomCount")
+    if explicit_bedrooms not in ("", None):
+        try:
+            bedrooms = float(explicit_bedrooms)
+        except (TypeError, ValueError):
+            bedrooms = None
+        if bedrooms is not None:
+            if bedrooms >= required_bedrooms:
+                return 95
+            reasons.append(f"Kun {bedrooms:g} registrerede soveværelser mod ønsket om {required_bedrooms}.")
+            return 25
+
+    rooms = listing.get("rooms")
+    if rooms in ("", None):
+        reasons.append("Antal værelser/soveværelser mangler, så familieegnethed vurderes forsigtigt.")
+        return 45
+    try:
+        rooms = float(rooms)
+    except (TypeError, ValueError):
+        return 45
+
+    # Boliga exposes rooms, not always bedrooms. For 3 bedrooms we conservatively prefer 4+ rooms
+    # (living room + 3 bedrooms) and warn on 3 rooms.
+    if rooms >= required_bedrooms + 1:
+        return 88
+    if rooms >= required_bedrooms:
+        reasons.append("Boliga viser 3 værelser, men ønsket er 3 soveværelser; planløsningen skal tjekkes manuelt.")
+        return 55
+    reasons.append("For få værelser i forhold til ønsket om 3 soveværelser.")
+    return 20
+
+
+def service_access_score(listing: dict[str, Any], raw: dict[str, Any], reasons: list[str]) -> float:
+    service = raw.get("service_access") if isinstance(raw.get("service_access"), dict) else {}
+    minutes = service.get("estimated_car_minutes")
+    name = service.get("nearest_name")
+    if minutes not in ("", None):
+        try:
+            minutes = float(minutes)
+        except (TypeError, ValueError):
+            minutes = None
+    if minutes is not None:
+        if minutes <= 10:
+            reasons.append(f"Nærmeste supermarked/service ser ud til at være ca. {minutes:g} min i bil væk" + (f" ({name})." if name else "."))
+            return 92
+        if minutes <= 20:
+            return 75
+        reasons.append(f"Serviceadgang kan være svag: nærmeste supermarked/service estimeres til ca. {minutes:g} min i bil.")
+        return 35
+
+    if ferry_warning(listing):
+        return 10
+    return 60
+
+
 def momentum_score(listing: dict[str, Any], raw: dict[str, Any], reasons: list[str]) -> tuple[float, bool]:
     days = listing.get("days_on_market") or 0
     price_drop_total = raw.get("priceChangeCashTotal") or 0
@@ -315,17 +432,33 @@ def score_listing(
     privacy = privacy_score(listing, raw, reasons)
     rental = rental_score(listing, raw, nature)
     value = value_score(listing, medians, reasons)
+    price_fit = price_fit_score(listing, prefs, raw, reasons)
+    bedrooms = bedroom_score(listing, prefs, raw, reasons)
+    services = service_access_score(listing, raw, reasons)
     momentum, motivated = momentum_score(listing, raw, reasons)
+    matched_area = area_research.match_area_profile(listing)
+    area_score, area_adjust = area_research.area_adjustment(matched_area)
+    if matched_area:
+        if area_adjust > 0:
+            reasons.append(f"Områdebonus: {matched_area['name']} passer godt til ønsket om personlig, brofast sommerhusjagt.")
+        elif area_adjust < 0:
+            reasons.append(f"Område-advarsel: {matched_area['name']} virker mindre oplagt til jeres ønsker.")
 
     fit = (
-        loc * 0.20
-        + travel * 0.18
-        + nature * 0.17
-        + privacy * 0.12
-        + rental * 0.13
-        + value * 0.15
-        + momentum * 0.05
+        loc * 0.16
+        + travel * 0.15
+        + nature * 0.13
+        + privacy * 0.08
+        + rental * 0.05
+        + value * 0.17
+        + price_fit * 0.16
+        + bedrooms * 0.06
+        + services * 0.02
+        + momentum * 0.02
     )
+    fit += area_adjust
+    if ferry_warning(listing):
+        fit = min(fit, 42)
     fit += feedback_adjustment(str(listing["listing_id"]), feedback_map, reasons)
     fit = clamp(round(fit, 1))
 
@@ -343,7 +476,14 @@ def score_listing(
         "privacy_score": round(privacy, 1),
         "rental_score": round(rental, 1),
         "value_score": round(value, 1),
+        "price_fit_score": round(price_fit, 1),
+        "bedroom_score": round(bedrooms, 1),
+        "service_access_score": round(services, 1),
         "momentum_score": round(momentum, 1),
+        "area_research_score": round(area_score, 1),
+        "area_research_adjustment": round(area_adjust, 1),
+        "area_research_id": matched_area.get("id") if matched_area else None,
+        "area_research_name": matched_area.get("name") if matched_area else None,
         "distance_km_from_cph": travel_meta["distance_km"],
         "estimated_car_minutes": travel_meta["car_minutes"],
         "estimated_public_transport_minutes": travel_meta["public_transport_minutes"],
@@ -432,7 +572,7 @@ def score_all(conn, prefs: dict[str, Any] | None = None) -> list[dict[str, Any]]
             "SELECT source FROM flood_risk WHERE listing_id = ?",
             (listing["listing_id"],),
         ).fetchone()
-        if flood_row is None or flood_row["source"] == flood_risk.SOURCE_NAME:
+        if flood_row is None or str(flood_row["source"]).startswith("pending_"):
             flood_risk.upsert_placeholder(conn, listing)
     conn.commit()
     return scores
@@ -466,6 +606,7 @@ def scored_rows(conn) -> list[dict[str, Any]]:
                f.warning_level AS flood_warning_level,
                f.warning_text AS flood_warning_text,
                f.source AS flood_source,
+               f.trigger_json AS flood_trigger_json,
                f.last_checked_at AS flood_last_checked_at
         FROM listings l
         JOIN listing_scores s ON s.listing_id = l.listing_id
@@ -520,11 +661,16 @@ def decorate_listing(item: dict[str, Any]) -> dict[str, Any]:
     item["image_count"] = len(raw.get("images") or []) if isinstance(raw.get("images"), list) else 0
     item["lot_size"] = raw.get("lotSize")
     item["views"] = raw.get("views")
+    trigger = parse_json(item.pop("flood_trigger_json", None), {})
     item["flood_risk"] = {
         "warning_level": item.pop("flood_warning_level", None),
         "warning_text": item.pop("flood_warning_text", None),
         "source": item.pop("flood_source", None),
         "last_checked_at": item.pop("flood_last_checked_at", None),
+        "details": trigger,
+        "elevation_m": trigger.get("elevation_m") if isinstance(trigger, dict) else None,
+        "low_lying_level": trigger.get("low_lying_level") if isinstance(trigger, dict) else None,
+        "historical_flooding": trigger.get("historical_flooding") if isinstance(trigger, dict) else None,
     }
     item["hidden_gem"] = bool(item["hidden_gem"])
     item["motivated_seller"] = bool(item["motivated_seller"])
@@ -807,6 +953,7 @@ def items_for_category(conn, category: str, run_id: int | None = None) -> list[d
                f.warning_level AS flood_warning_level,
                f.warning_text AS flood_warning_text,
                f.source AS flood_source,
+               f.trigger_json AS flood_trigger_json,
                f.last_checked_at AS flood_last_checked_at
         FROM recommendation_items ri
         JOIN listings l ON l.listing_id = ri.listing_id
@@ -841,6 +988,7 @@ def listing_analysis(conn, listing_id: str) -> dict[str, Any] | None:
                f.warning_level AS flood_warning_level,
                f.warning_text AS flood_warning_text,
                f.source AS flood_source,
+               f.trigger_json AS flood_trigger_json,
                f.last_checked_at AS flood_last_checked_at
         FROM listings l
         LEFT JOIN listing_scores s ON s.listing_id = l.listing_id
@@ -911,6 +1059,7 @@ def watchlist(conn) -> list[dict[str, Any]]:
                f.warning_level AS flood_warning_level,
                f.warning_text AS flood_warning_text,
                f.source AS flood_source,
+               f.trigger_json AS flood_trigger_json,
                f.last_checked_at AS flood_last_checked_at
         FROM watchlist w
         JOIN listings l ON l.listing_id = w.listing_id
@@ -932,9 +1081,15 @@ def map_listings(conn, limit: int = 2000) -> list[dict[str, Any]]:
     rows = conn.execute(
         """
         SELECT l.*, s.fit_score, s.hidden_gem, s.motivated_seller,
-               s.reasons_json, s.components_json
+               s.reasons_json, s.components_json,
+               f.warning_level AS flood_warning_level,
+               f.warning_text AS flood_warning_text,
+               f.source AS flood_source,
+               f.trigger_json AS flood_trigger_json,
+               f.last_checked_at AS flood_last_checked_at
         FROM listings l
         LEFT JOIN listing_scores s ON s.listing_id = l.listing_id
+        LEFT JOIN flood_risk f ON f.listing_id = l.listing_id
         WHERE l.status = 'active'
           AND l.latitude IS NOT NULL
           AND l.longitude IS NOT NULL
@@ -948,12 +1103,33 @@ def map_listings(conn, limit: int = 2000) -> list[dict[str, Any]]:
     for row in rows:
         item = row_to_dict(row)
         raw = raw_for(item)
+        item.pop("raw_json", None)
         item["image_url"] = first_image_url(raw)
         item["open_house"] = raw.get("openHouse") or None
         item["open_house_is_future"] = has_future_open_house(item)
         item["lot_size"] = raw.get("lotSize")
-        item["reasons"] = parse_json(item.pop("reasons_json", None), [])
-        item["score_components"] = parse_json(item.pop("components_json", None), {})
+        reasons = parse_json(item.pop("reasons_json", None), [])
+        components = parse_json(item.pop("components_json", None), {})
+        flood_trigger = parse_json(item.pop("flood_trigger_json", None), {})
+        item["reasons"] = reasons[:3]
+        item["flood_risk"] = {
+            "warning_level": item.pop("flood_warning_level", None),
+            "warning_text": item.pop("flood_warning_text", None),
+            "source": item.pop("flood_source", None),
+            "last_checked_at": item.pop("flood_last_checked_at", None),
+            "details": flood_trigger,
+            "elevation_m": flood_trigger.get("elevation_m") if isinstance(flood_trigger, dict) else None,
+            "low_lying_level": flood_trigger.get("low_lying_level") if isinstance(flood_trigger, dict) else None,
+            "historical_flooding": flood_trigger.get("historical_flooding") if isinstance(flood_trigger, dict) else None,
+        }
+        item["score_components"] = {
+            "estimated_public_transport_minutes": components.get("estimated_public_transport_minutes"),
+            "estimated_car_minutes": components.get("estimated_car_minutes"),
+            "area_research_id": components.get("area_research_id"),
+            "area_research_name": components.get("area_research_name"),
+            "area_research_score": components.get("area_research_score"),
+            "area_research_adjustment": components.get("area_research_adjustment"),
+        }
         item["hidden_gem"] = bool(item.get("hidden_gem"))
         item["motivated_seller"] = bool(item.get("motivated_seller"))
         items.append(item)

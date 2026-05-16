@@ -1,6 +1,13 @@
 {
   "ai_highlights_limit": 10,
-  "daily_limit": 10,
+  "budget": {
+    "ideal_max": 2500000,
+    "ideal_min": 2000000,
+    "move_in_ready_max": 3000000,
+    "renovation_max": 2000000,
+    "track_over_budget_price_drops": true
+  },
+  "daily_limit": 5,
   "dealbreakers": {
     "ferry_required": false,
     "high_flood_risk": false,
@@ -30,14 +37,20 @@
     "size_min": null
   },
   "home_base": "Copenhagen Central Station",
+  "house": {
+    "bedrooms_min": 3,
+    "energy_rating_matters": false,
+    "rooms_min_conservative": 4
+  },
   "interest_threshold": 68,
   "regions": {
     "avoid_ferry": true,
     "include_hovedstaden": true,
     "prefer_sjaelland": true
   },
-  "search": {
-    "description": "Vi leder efter et indbydende sommerhus på Sjælland, gerne nær vand eller natur, med ro, privatliv, god familiebrug og fornuftig pris.",
+    "search": {
+    "description": "Vi leder efter et sommerhus på Sjælland til familiebrug: helst 2-2,5 mio. kr., maks 3 mio. kr. for indflytningsklart, renoveringsprojekter op til ca. 2 mio. kr., 3 soveværelser, tæt på vand/natur, privat men ikke isoleret, uden færge, og med rimelig adgang fra København H.",
+    "wishes_note": "Vi leder efter et sommerhus på Sjælland og brofaste øer, uden færge. Det skal føles personligt, roligt og tæt på vand eller natur, men ikke så isoleret at indkøb og service bliver besværligt. Ideelt 2-2,5 mio. kr.; maks 3 mio. kr. hvis det er indflytningsklart, og renoveringsprojekter kan være interessante op til ca. 2 mio. kr. Vi vil gerne have mindst 3 rigtige soveværelser, og offentlig transport fra København må gerne være omkring 2 timer — lidt over er en advarsel, ikke et automatisk nej. Agenten må være opinionated og sige nej til områder eller huse, der ikke føles rigtige.",
     "negative_keywords": [
       "færge",
       "meget lang rejsetid"
@@ -50,8 +63,13 @@
       "natur",
       "rolig",
       "familie",
-      "privatliv"
+      "privatliv",
+      "supermarked",
+      "service"
     ]
+  },
+  "services": {
+    "max_supermarket_car_minutes": 20
   },
   "signals": {
     "family_use": true,
@@ -61,12 +79,13 @@
     "peace_quiet": true,
     "privacy": true,
     "renovation_potential": "state_not_penalize",
-    "rental_potential": true
+    "rental_potential": "bonus"
   },
   "travel": {
     "ideal_car_minutes_max": 90,
     "ideal_car_minutes_min": 60,
-    "max_public_transport_minutes": 120
+    "max_public_transport_minutes": 120,
+    "warn_public_transport_minutes": 135
   },
   "weekly_limit": 10
 }

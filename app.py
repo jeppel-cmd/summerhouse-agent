@@ -8,6 +8,7 @@ sys.path.insert(0, str(project_root / ".vendor_local"))
 
 from flask import Flask, jsonify, render_template, request
 
+import area_research
 import database
 import preferences
 import recommendations
@@ -64,6 +65,11 @@ def api_stats():
 @app.get("/api/preferences")
 def api_get_preferences():
     return jsonify(preferences.load_preferences())
+
+
+@app.get("/api/area-research")
+def api_area_research():
+    return jsonify(area_research.public_profiles())
 
 
 @app.put("/api/preferences")
@@ -177,8 +183,8 @@ def api_watchlist():
 
 @app.get("/api/map/listings")
 def api_map_listings():
-    limit = request.args.get("limit", default=2000, type=int)
-    limit = max(1, min(limit, 5000))
+    limit = request.args.get("limit", default=10000, type=int)
+    limit = max(1, min(limit, 10000))
     with get_db() as conn:
         return jsonify(recommendations.map_listings(conn, limit=limit))
 
@@ -204,4 +210,10 @@ def api_scrape():
 if __name__ == "__main__":
     with get_db():
         pass
-    app.run(host="localhost", port=8080, debug=False)
+    # Bind defaults stay safe for local/tunnel use, but can be overridden for Docker.
+    # Example: SUMMERHOUSE_HOST=0.0.0.0 SUMMERHOUSE_PORT=8080 python app.py
+    import os
+
+    host = os.getenv("SUMMERHOUSE_HOST", "127.0.0.1")
+    port = int(os.getenv("SUMMERHOUSE_PORT", "8080"))
+    app.run(host=host, port=port, debug=False)
