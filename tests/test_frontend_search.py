@@ -124,3 +124,12 @@ def test_area_cards_link_to_specific_area_listing_view() -> None:
     assert 'data-area-listings' in source
     assert 'renderAreaListings' in source
     assert 'Tilbage til områder' in source
+
+
+def test_listing_images_link_to_broker_redirect_not_details_or_boliga() -> None:
+    source = APP_JS.read_text()
+    assert 'broker-redirect' in source
+    assert 'aria-label="Åbn hos mægler"' in source
+    assert '<a class="image-button"' in source
+    assert 'href="${esc(externalUrl)}"' in source
+    assert '>Boliga</a>' not in source

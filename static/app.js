@@ -267,8 +267,12 @@ function reasons(item, limit = 3) {
 
 function card(item, options = {}) {
   const id = String(item.listing_id);
+  const externalUrl = `/api/listings/${encodeURIComponent(id)}/broker-redirect`;
+  const imageTarget = item.image_url
+    ? `<a class="image-button" href="${esc(externalUrl)}" target="_blank" rel="noopener" aria-label="Åbn hos mægler" style="background-image:url('${esc(item.image_url)}')"></a>`
+    : `<button class="image-button empty" data-action="details" data-id="${esc(id)}"></button>`;
   return `<article class="listing-card${options.compact ? " compact" : ""}">
-    ${item.image_url ? `<button class="image-button" data-action="details" data-id="${esc(id)}" style="background-image:url('${esc(item.image_url)}')"></button>` : `<button class="image-button empty" data-action="details" data-id="${esc(id)}"></button>`}
+    ${imageTarget}
     <div class="card-body">
       <div class="card-head">
         <div>
@@ -292,7 +296,7 @@ function card(item, options = {}) {
         <button data-action="like" data-id="${esc(id)}">Like</button>
         <button data-action="dislike" data-id="${esc(id)}" class="quiet">Dislike</button>
         <button data-action="details" data-id="${esc(id)}" class="quiet">Detaljer</button>
-        ${item.listing_url ? `<a href="${esc(item.listing_url)}" target="_blank" rel="noopener">Boliga</a>` : ""}
+        ${item.listing_url ? `<a href="${esc(externalUrl)}" target="_blank" rel="noopener">Mægler</a>` : ""}
       </div>
     </div>
   </article>`;
@@ -749,14 +753,15 @@ async function openDetails(id) {
   document.body.classList.add("modal-open");
   body.innerHTML = `<div class="loading">Henter analyse...</div>`;
   const item = await apiFetch(`/api/listings/${id}/analysis`);
+  const externalUrl = `/api/listings/${encodeURIComponent(id)}/broker-redirect`;
   body.innerHTML = `<article class="detail">
-    ${item.image_url ? `<div class="detail-image" style="background-image:url('${esc(item.image_url)}')"></div>` : ""}
+    ${item.image_url ? `<a class="detail-image" href="${esc(externalUrl)}" target="_blank" rel="noopener" aria-label="Åbn hos mægler" style="background-image:url('${esc(item.image_url)}')"></a>` : ""}
     <div class="detail-body">
       <div class="card-head"><div><h2>${esc(item.address || "Ukendt adresse")}</h2><p>${esc([item.postal_code, item.city, item.region].filter(Boolean).join(" · "))}</p></div><div class="score ${scoreTone(item.fit_score)}"><b>${Math.round(item.fit_score || 0)}</b><span>match</span></div></div>
       <div class="metrics detail-metrics">${metric("Pris", price(item.asking_price))}${metric("Kr/m²", item.price_per_m2 ? `${fmt(item.price_per_m2)} kr.` : "-")}${metric("Areal", item.size_m2 ? `${fmt(item.size_m2)} m²` : "-")}${metric("Værelser", item.rooms ?? "-")}${metric("Byggeår", item.year_built ?? "-")}${metric("Grund", item.lot_size ? `${fmt(item.lot_size)} m²` : "-")}${metric("Rejseproxy", travelLabel(item))}</div>
       <section><h3>Agentens vurdering</h3>${reasons(item, 8)}</section>
       ${geoRiskDetail(item)}
-      <div class="card-actions"><button data-action="favorite" data-id="${esc(id)}">Favorit</button><button data-action="like" data-id="${esc(id)}">Like</button><button data-action="dislike" data-id="${esc(id)}" class="quiet">Dislike</button>${item.listing_url ? `<a href="${esc(item.listing_url)}" target="_blank" rel="noopener">Boliga</a>` : ""}</div>
+      <div class="card-actions"><button data-action="favorite" data-id="${esc(id)}">Favorit</button><button data-action="like" data-id="${esc(id)}">Like</button><button data-action="dislike" data-id="${esc(id)}" class="quiet">Dislike</button>${item.listing_url ? `<a href="${esc(externalUrl)}" target="_blank" rel="noopener">Mægler</a>` : ""}</div>
     </div>
   </article>`;
   attachActions(body);

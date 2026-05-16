@@ -24,6 +24,7 @@ import requests
 
 
 BASE_URL = "https://api.boliga.dk/api/v2/search/results"
+ESTATE_URL = "https://api.boliga.dk/api/v2/estate/{listing_id}"
 LISTING_WEB_ROOT = "https://www.boliga.dk"
 DEFAULT_PAGE_SIZE = 50
 
@@ -154,6 +155,34 @@ def listing_url(raw: dict[str, Any], listing_id: str) -> str:
     return f"{LISTING_WEB_ROOT}/adresse/{listing_id}"
 
 
+def broker_url(raw: dict[str, Any]) -> str | None:
+    """Return the broker/estate-agent URL when Boliga exposes it."""
+    raw_url = get_any(raw, "estateUrl", "projectSaleUrl", "brokerUrl", "agentUrl")
+    if not raw_url:
+        return None
+    return str(raw_url)
+
+
+def fetch_broker_url(listing_id: str) -> str | None:
+    """Fetch listing details and extract the estate-agent URL.
+
+    The search endpoint does not include the broker URL, but Boliga's detail
+    endpoint usually includes `estateUrl`.
+    """
+    response = requests.get(ESTATE_URL.format(listing_id=listing_id), headers=default_headers(), timeout=20)
+    content_type = response.headers.get("content-type", "")
+    text_start = response.text[:300].lower()
+
+    if "text/html" in content_type or "enable javascript and cookies" in text_start:
+        raise BoligaBlockedError(
+            "Boliga returned a browser challenge instead of JSON while fetching listing details."
+        )
+
+    response.raise_for_status()
+    payload = response.json()
+    return broker_url(payload) if isinstance(payload, dict) else None
+
+
 def normalize_listing(raw: dict[str, Any]) -> dict[str, Any]:
     listing_id = str(get_any(raw, "id", "estateId", "propertyId", "guid"))
     if listing_id in ("None", ""):
@@ -186,6 +215,7 @@ def normalize_listing(raw: dict[str, Any]) -> dict[str, Any]:
                           if get_any(raw, "energyClass", "energyRating", "energyLabel") else None),
         "days_on_market": to_int(get_any(raw, "daysForSale", "daysOnMarket", "dom")),
         "listing_url": listing_url(raw, listing_id),
+        "broker_url": broker_url(raw),
         "latitude": to_float(get_any(raw, "lat", "latitude")),
         "longitude": to_float(get_any(raw, "lon", "lng", "longitude")),
         "raw": raw,

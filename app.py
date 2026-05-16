@@ -6,7 +6,7 @@ from pathlib import Path
 project_root = Path(__file__).resolve().parent
 sys.path.insert(0, str(project_root / ".vendor_local"))
 
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, redirect, render_template, request
 
 import area_research
 import database
@@ -146,6 +146,29 @@ def api_listing_analysis(listing_id: str):
         if item is None:
             return jsonify({"ok": False, "error": "Listing not found"}), 404
         return jsonify(item)
+
+
+@app.get("/api/listings/<listing_id>/broker-redirect")
+def api_listing_broker_redirect(listing_id: str):
+    with get_db() as conn:
+        row = conn.execute(
+            "SELECT listing_url, raw_json FROM listings WHERE listing_id = ?",
+            (listing_id,),
+        ).fetchone()
+        if row is None:
+            return jsonify({"ok": False, "error": "Listing not found"}), 404
+
+        raw = recommendations.raw_for(dict(row))
+        target = scraper.broker_url(raw)
+        if target is None:
+            try:
+                target = scraper.fetch_broker_url(listing_id)
+            except Exception:
+                target = None
+        target = target or row["listing_url"]
+        if not target:
+            return jsonify({"ok": False, "error": "No external URL found"}), 404
+        return redirect(target, code=302)
 
 
 @app.post("/api/listings/<listing_id>/feedback")
