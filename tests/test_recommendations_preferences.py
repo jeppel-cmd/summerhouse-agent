@@ -63,6 +63,16 @@ def test_ideal_price_scores_better_than_over_budget():
     assert any("over 3 mio" in reason.lower() for reason in over["reasons"])
 
 
+def test_below_ideal_price_is_positive_not_a_penalty_when_other_factors_match():
+    medians = {"prefix:45": 25_000, "region:Region Sjælland": 25_000}
+    ideal = recommendations.score_listing(listing(asking_price=2_300_000), prefs(), medians, {})
+    below = recommendations.score_listing(listing(asking_price=1_700_000), prefs(), medians, {})
+
+    assert below["components"]["price_fit_score"] >= ideal["components"]["price_fit_score"]
+    assert below["fit_score"] >= ideal["fit_score"]
+    assert any("under idealbudgettet" in reason.lower() for reason in below["reasons"])
+
+
 def test_renovation_project_can_be_interesting_under_two_million():
     medians = {"prefix:45": 25_000, "region:Region Sjælland": 25_000}
     raw = {"description": "Renoveringsprojekt med nyt tag og stor grund tæt på skov"}

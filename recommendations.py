@@ -12,7 +12,7 @@ import flood_risk
 import preferences as preference_store
 
 
-SCORE_VERSION = "deterministic-v1"
+SCORE_VERSION = "deterministic-v2"
 CPH_CENTRAL_LAT = 55.6728
 CPH_CENTRAL_LON = 12.5655
 
@@ -300,15 +300,15 @@ def price_fit_score(listing: dict[str, Any], prefs: dict[str, Any], raw: dict[st
     if ideal_min <= price <= ideal_max:
         reasons.append("Pris ligger i idealbudgettet på ca. 2-2,5 mio. kr.")
         return 95
-    if is_renovation and price <= renovation_max:
-        reasons.append("Renoveringsprojekt under ca. 2 mio. kr., som kan være interessant hvis standen matcher prisen.")
-        return 84
     if price < ideal_min:
         if is_renovation:
-            reasons.append("Billigt renoveringsspor, men standen bør tjekkes grundigt.")
-            return 78
-        reasons.append("Pris ligger under idealbudgettet og kan være stærk værdi, hvis huset ellers passer.")
-        return 88
+            reasons.append("Pris ligger under idealbudgettet; renoveringsstanden skal tjekkes, men den lave pris er et plus hvis huset ellers passer.")
+            return 95
+        reasons.append("Pris ligger under idealbudgettet og tæller positivt, hvis huset ellers passer.")
+        return 98
+    if is_renovation and price <= renovation_max:
+        reasons.append("Renoveringsprojekt under ca. 2 mio. kr., som kan være interessant hvis standen matcher prisen.")
+        return 90
     if price <= move_in_ready_max:
         reasons.append("Pris er under maks. 3 mio. kr., men over idealbudgettet.")
         return 68

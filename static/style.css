@@ -280,6 +280,9 @@ button:disabled { opacity: .6; cursor: default; }
   box-shadow: var(--shadow);
   display: grid;
   gap: 14px;
+  max-height: calc(100vh - 138px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 14px;
   position: sticky;
   top: 118px;
@@ -614,7 +617,7 @@ body.modal-open { overflow: hidden; }
   .main-nav { justify-content: flex-start; overflow-x: auto; }
   .page-head { align-items: start; flex-direction: column; }
   .match-layout, .map-layout, .open-layout { grid-template-columns: 1fr; }
-  .filter-panel { position: static; }
+  .filter-panel { max-height: none; overflow-y: visible; position: static; }
   .map-list { max-height: none; }
 }
 

@@ -133,3 +133,11 @@ def test_listing_images_link_to_broker_redirect_not_details_or_boliga() -> None:
     assert '<a class="image-button"' in source
     assert 'href="${esc(externalUrl)}"' in source
     assert '>Boliga</a>' not in source
+
+
+def test_sticky_filter_panel_is_independently_scrollable() -> None:
+    css = (ROOT / "static" / "style.css").read_text()
+    filter_panel_block = css[css.index(".filter-panel {"):css.index(".filter-head {")]
+    assert "max-height: calc(100vh" in filter_panel_block
+    assert "overflow-y: auto" in filter_panel_block
+
