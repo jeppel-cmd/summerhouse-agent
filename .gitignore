@@ -1,0 +1,4 @@
+data/
+.vendor_local/
+__pycache__/
+*.pyc

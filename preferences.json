@@ -1,0 +1,72 @@
+{
+  "ai_highlights_limit": 10,
+  "daily_limit": 10,
+  "dealbreakers": {
+    "ferry_required": false,
+    "high_flood_risk": false,
+    "poor_location": false
+  },
+  "feedback_types": [
+    "favorite",
+    "like",
+    "dislike"
+  ],
+  "filters": {
+    "days_on_market_max": null,
+    "energy_ratings": [],
+    "lot_size_min": null,
+    "must_have_image": true,
+    "only_future_open_houses": true,
+    "postal_codes": [],
+    "price_max": null,
+    "price_min": null,
+    "price_per_m2_max": null,
+    "regions": [
+      "Region Sjælland",
+      "Region Hovedstaden"
+    ],
+    "rooms_min": 3,
+    "size_max": null,
+    "size_min": null
+  },
+  "home_base": "Copenhagen Central Station",
+  "interest_threshold": 68,
+  "regions": {
+    "avoid_ferry": true,
+    "include_hovedstaden": true,
+    "prefer_sjaelland": true
+  },
+  "search": {
+    "description": "Vi leder efter et indbydende sommerhus på Sjælland, gerne nær vand eller natur, med ro, privatliv, god familiebrug og fornuftig pris.",
+    "negative_keywords": [
+      "færge",
+      "meget lang rejsetid"
+    ],
+    "positive_keywords": [
+      "strand",
+      "hav",
+      "fjord",
+      "skov",
+      "natur",
+      "rolig",
+      "familie",
+      "privatliv"
+    ]
+  },
+  "signals": {
+    "family_use": true,
+    "motivated_seller_weight": "moderate",
+    "nature": true,
+    "near_water": true,
+    "peace_quiet": true,
+    "privacy": true,
+    "renovation_potential": "state_not_penalize",
+    "rental_potential": true
+  },
+  "travel": {
+    "ideal_car_minutes_max": 90,
+    "ideal_car_minutes_min": 60,
+    "max_public_transport_minutes": 120
+  },
+  "weekly_limit": 10
+}

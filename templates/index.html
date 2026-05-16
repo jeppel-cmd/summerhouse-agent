@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sommerhus Agent</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="eyebrow">Personlig købsagent</span>
+      <h1>Sommerhus Agent</h1>
+    </div>
+    <nav class="main-nav" aria-label="Hovednavigation">
+      <button class="nav-tab active" data-view="match">Match</button>
+      <button class="nav-tab" data-view="map">Kort</button>
+      <button class="nav-tab" data-view="favorites">Favoritter</button>
+      <button class="nav-tab" data-view="preferences">Præferencer</button>
+    </nav>
+    <div class="top-actions">
+      <button id="generateBtn" title="Genberegner match, AI fremhævede, prisfald og fremvisninger ud fra de data der allerede ligger lokalt.">Genberegn match</button>
+      <button id="scrapeBtn" class="secondary" title="Henter friske annoncer fra Boliga og gemmer dem i den lokale database.">Hent nye annoncer</button>
+    </div>
+  </header>
+
+  <section class="stats-strip" aria-label="Status">
+    <div><span id="statActive">-</span><label>Aktive annoncer</label></div>
+    <div><span id="statPpm">-</span><label>Gns. kr/m²</label></div>
+    <div><span id="statTrend">-</span><label>Seneste 7 dage</label></div>
+    <div><span id="statRun">-</span><label>Sidste kørsel</label></div>
+  </section>
+
+  <div id="globalStatus" class="global-status"></div>
+  <main id="appMain"></main>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-panel">
+      <button class="modal-close" id="modalClose" aria-label="Luk">×</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
