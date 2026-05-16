@@ -7,7 +7,7 @@ This project uses a deliberately non-destructive research workflow.
 The scheduled research agent should:
 
 1. Read the current `data/area_research.json` profiles.
-2. Research Sjælland and bridge-connected island summerhouse areas relevant to Jeppee's criteria.
+2. Research Sjælland and bridge-connected island summerhouse areas relevant to Jeppe's criteria.
 3. Produce a new proposal JSON file in `data/research_proposals/`.
 4. Validate the proposal with `scripts/validate_area_research_proposal.py`.
 5. Send a concise Telegram summary with the proposal path and recommended next action.
