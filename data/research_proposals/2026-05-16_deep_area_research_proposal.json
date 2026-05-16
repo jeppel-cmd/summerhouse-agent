@@ -1,0 +1,506 @@
+{
+  "schema_version": 1,
+  "non_destructive": true,
+  "generated_at": "2026-05-16T14:58:58Z",
+  "summary_da": "Deep research-forslag med fem nye brofaste/vejfaste områder på Sjælland, Falster og Lolland samt fire målrettede opdateringer til eksisterende profiler. Fokus er value i 2,0-2,5 mio. kr.-sporet, maksimum ca. 3 mio. kr. for indflytningsklart, vand/natur tæt på, services inden for cirka 20 min. i bil og ærlig markering af transport/flood-lavbundsrisiko uden automatisk frasortering.",
+  "research_focus": [
+    "non-destruktive forslag uden ændring af data/area_research.json",
+    "Sjælland og bro-/vejforbundne Møn, Falster og Lolland - ingen Bornholm eller færgeafhængige øer",
+    "hidden-gem/value-områder med vand, natur og realistiske serviceankre",
+    "København i bil ca. 1,5-2 timer hvor muligt; offentlig transport over målet markeres som caveat",
+    "stormflod, erosion, lavbund og lokale klimatilpasningskort som manuelt due-diligence punkt"
+  ],
+  "research_method_da": "Kandidaterne er valgt efter overlap mellem nuværende områdeprofiler, brugerens geografi/budgetkriterier, officielle kommune-/destination-/naturkilder, transport-realitet via Rejseplanen/DSB som tjekpunkt og nationale klimatilpasnings-/kystkilder. Prisniveau er behandlet som et filter der skal verificeres på konkrete boliger, ikke som garanteret markedsdata i forslaget.",
+  "proposed_profile_additions": [
+    {
+      "id": "kulhuse-jaegerspris",
+      "name": "Kulhuse / Jægerspris / Hornsherred nord",
+      "region": "Nordsjælland/Fjordlandet",
+      "language": "da",
+      "access_scope": "sjælland_bridge_connected",
+      "postal_ranges": [
+        [3630, 3630]
+      ],
+      "match_terms": [
+        "Kulhuse",
+        "Jægerspris",
+        "Jaegerspris",
+        "Hornsherred",
+        "Nordskoven",
+        "Kignæs"
+      ],
+      "area_fit_score": 84,
+      "hidden_gem_score": 78,
+      "vibe": "Fjord, skov og klassisk sommerhusro tættere på København end mange sydlige value-spor.",
+      "opinionated_take": "Jeg ville teste Kulhuse/Jægerspris som et stærkt kompromis: ikke lige så hypet som Tisvilde/Rørvig, men med reel vand- og skovfølelse samt en mere spontan køretid fra København. Det kræver dog hårdt filter på grundens kvalitet, støj/vejfølelse og offentlig transport.",
+      "best_for": [
+        "Kortere bilafstand fra København",
+        "Fjord og skov",
+        "Weekendbrug med value-potentiale",
+        "Familiebrug uden nordkyst-premium"
+      ],
+      "watch_outs": [
+        "Kulhuse-færgen må ikke være nødvendig for hverdagsadgang; vurder området som vejfast via Hornsherred",
+        "Offentlig transport kan blive langsom med sidste bus/last mile og bør tjekkes pr. adresse",
+        "Kystnære og fjordnære grunde skal screenes for stormflod/lavbund",
+        "Nogle lommer kan føles mere almindelige end naturidylliske"
+      ],
+      "transport_note": "Bil fra København kan ofte ligge inden for målzonen afhængigt af trafik og præcis adresse; PT bør forventes som caveat og testes i Rejseplanen med weekendtider.",
+      "service_note": "Jægerspris og Frederikssund giver de vigtigste serviceankre; de fleste relevante huse bør kunne holdes inden for ca. 20 min. i bil til dagligvarer/større service.",
+      "sources": [
+        {
+          "title": "Frederikssund Kommune",
+          "url": "https://www.frederikssund.dk/"
+        },
+        {
+          "title": "VisitFjordlandet",
+          "url": "https://www.visitfjordlandet.dk/"
+        },
+        {
+          "title": "Rejseplanen",
+          "url": "https://www.rejseplanen.dk/"
+        },
+        {
+          "title": "Klimatilpasning KAMP",
+          "url": "https://kamp.klimatilpasning.dk/"
+        }
+      ]
+    },
+    {
+      "id": "roesnaes-kalundborg",
+      "name": "Røsnæs / Kalundborg vestkyst",
+      "region": "Vestsjælland",
+      "language": "da",
+      "access_scope": "sjælland_bridge_connected",
+      "postal_ranges": [
+        [4400, 4400]
+      ],
+      "match_terms": [
+        "Røsnæs",
+        "Roesnaes",
+        "Kalundborg",
+        "Nyby Strand",
+        "Kongstrup",
+        "Nyrup Strand"
+      ],
+      "area_fit_score": 82,
+      "hidden_gem_score": 84,
+      "vibe": "Dramatisk halvø, Storebælt, lys, skrænter og natur - mere karakter end gennemsnitligt sommerhusland.",
+      "opinionated_take": "Røsnæs er en af de mere spændende value/natur-kandidater, hvis I accepterer at den føles længere væk. Jeg ville prioritere huse med ægte landskabs- eller vandkontakt frem for bare Kalundborg-postnummer, og være disciplineret på transport/indkøb.",
+      "best_for": [
+        "Natur og udsigtspotentiale",
+        "Hidden-gem-følelse",
+        "Ro og vand",
+        "Mere særpræg for pengene"
+      ],
+      "watch_outs": [
+        "Bil er sandsynligvis nødvendig for spontan brug",
+        "PT fra København kan let komme over 2 timer inkl. bus/last mile",
+        "Kystskrænter, erosion og adgangsforhold skal tjekkes konkret",
+        "Serviceafstanden varierer meget mellem Kalundborg-nære og yderste halvø"
+      ],
+      "transport_note": "Kalundborg har togforbindelse, men sommerhuslommer på Røsnæs kræver ofte bus/cykel/bil videre; markér PT som mulig advarsel.",
+      "service_note": "Kalundborg er stærk servicebase; yderligere lokalt indkøb og helårsservice skal verificeres pr. adresse.",
+      "sources": [
+        {
+          "title": "VisitVestsjælland",
+          "url": "https://www.visitvestsjaelland.dk/"
+        },
+        {
+          "title": "Kalundborg Kommune",
+          "url": "https://www.kalundborg.dk/"
+        },
+        {
+          "title": "Naturstyrelsen",
+          "url": "https://naturstyrelsen.dk/"
+        },
+        {
+          "title": "Kystdirektoratet",
+          "url": "https://kyst.dk/"
+        }
+      ]
+    },
+    {
+      "id": "ore-strand-vordingborg",
+      "name": "Ore Strand / Vordingborg / Masnedsund",
+      "region": "Sydsjælland",
+      "language": "da",
+      "access_scope": "sjælland_bridge_connected",
+      "postal_ranges": [
+        [4760, 4760]
+      ],
+      "match_terms": [
+        "Ore Strand",
+        "Vordingborg",
+        "Masnedsund",
+        "Masnedø",
+        "Masnedoe",
+        "Storstrømmen"
+      ],
+      "area_fit_score": 81,
+      "hidden_gem_score": 73,
+      "vibe": "Praktisk sydsjællandsk vandnær base med byservice tættere på end mange mere romantiske yderområder.",
+      "opinionated_take": "Dette er ikke nødvendigvis den mest poetiske hidden gem, men det kan være et rationelt sweet spot: vand tæt på, Vordingborg som serviceby og kortere transport end Møn/Falster/Lolland. Jeg ville bruge det som praktisk modvægt til de mere fjerne naturdrømme.",
+      "best_for": [
+        "Vandnærhed plus service",
+        "Mere helårsbrugbar base",
+        "Kortere sydsjællandsk transport",
+        "Budgetdisciplin under 3 mio. kr."
+      ],
+      "watch_outs": [
+        "Undgå adresser der føles som almindelig by/periferi uden sommerhusværdi",
+        "Lavtliggende kystnære grunde ved sund/fjord skal flood-tjekkes",
+        "Trafik, bane og bro-/anlægsnærhed kan påvirke roen lokalt",
+        "PT kan være god til Vordingborg men sidste kilometer skal tjekkes"
+      ],
+      "transport_note": "Vordingborg-aksen er relativt stærk med tog/bil; sidste stykke til Ore Strand eller Masnedsund afgør om PT er acceptabel eller lidt over målet.",
+      "service_note": "Vordingborg giver stærk servicebase tæt på, hvilket passer godt med ønsket om indkøb/service inden for ca. 20 min. i bil.",
+      "sources": [
+        {
+          "title": "Vordingborg Kommune",
+          "url": "https://www.vordingborg.dk/"
+        },
+        {
+          "title": "Visit Sydsjælland & Møn",
+          "url": "https://www.sydsjaellandmoen.dk/"
+        },
+        {
+          "title": "DSB",
+          "url": "https://www.dsb.dk/"
+        },
+        {
+          "title": "Klimatilpasning KAMP",
+          "url": "https://kamp.klimatilpasning.dk/"
+        }
+      ]
+    },
+    {
+      "id": "nysted-oesterskov",
+      "name": "Nysted / Østerskov / sydøstlige Lolland",
+      "region": "Lolland",
+      "language": "da",
+      "access_scope": "sjælland_bridge_connected",
+      "postal_ranges": [
+        [4880, 4880],
+        [4894, 4894]
+      ],
+      "match_terms": [
+        "Nysted",
+        "Østerskov",
+        "Oesterskov",
+        "Sakskøbing",
+        "Sakskobing",
+        "Kettinge",
+        "Øster Ulslev",
+        "Oester Ulslev"
+      ],
+      "area_fit_score": 73,
+      "hidden_gem_score": 80,
+      "vibe": "Småby, havn, skov og Østersø-ro med mere value end de kendte sjællandske kyster.",
+      "opinionated_take": "Nysted/Østerskov er et klart value- og stemningsspor, men ikke et perfekt spontan-weekendvalg. Jeg ville kun anbefale det videre, hvis huset er markant stærkere for pengene eller har en særlig vand/skov-kvalitet, der opvejer transporten.",
+      "best_for": [
+        "Mere hus for pengene",
+        "Ro, havn og skov",
+        "Personlig småbystemning",
+        "Lang-weekender frem for hurtige aftenture"
+      ],
+      "watch_outs": [
+        "København kan ramme øvre del af 1,5-2 timers bilmål og PT kan være tydeligt over",
+        "Lavbund, stormflod og kystnære forhold skal tjekkes grundigt",
+        "Service er god nok regionalt, men ikke nødvendigvis superlokal ved hvert sommerhus",
+        "Likviditet/videresalg kan være svagere end på Sjælland"
+      ],
+      "transport_note": "Bil bør vurderes realistisk som ca. øvre målzone; offentlig transport via tog/bus skal markeres som advarsel, især ved weekend/last mile.",
+      "service_note": "Nysted, Sakskøbing og Nykøbing Falster kan fungere som serviceankre; konkrete huse bør screenes for indkøb inden for ca. 20 min. i bil.",
+      "sources": [
+        {
+          "title": "Visit Lolland-Falster",
+          "url": "https://www.visitlolland-falster.dk/"
+        },
+        {
+          "title": "Lolland Kommune",
+          "url": "https://www.lolland.dk/"
+        },
+        {
+          "title": "Rejseplanen",
+          "url": "https://www.rejseplanen.dk/"
+        },
+        {
+          "title": "Klimatilpasning KAMP",
+          "url": "https://kamp.klimatilpasning.dk/"
+        }
+      ]
+    },
+    {
+      "id": "bandholm-knuthenborg",
+      "name": "Bandholm / Knuthenborg / nordlige Lolland",
+      "region": "Lolland",
+      "language": "da",
+      "access_scope": "sjælland_bridge_connected",
+      "postal_ranges": [
+        [4930, 4930],
+        [4941, 4941]
+      ],
+      "match_terms": [
+        "Bandholm",
+        "Knuthenborg",
+        "Maribo",
+        "Harpelunde",
+        "Smålandsfarvandet",
+        "Smaalandsfarvandet"
+      ],
+      "area_fit_score": 72,
+      "hidden_gem_score": 76,
+      "vibe": "Nordlollandsk kyst, parklandskab og ro tæt på Maribo-service - value-orienteret men langt fra København.",
+      "opinionated_take": "Bandholm er interessant som et mere charmerende Lolland-spor end ren sydkyst/dige-ferie. Det bør dog ikke konkurrere på transport mod Sjælland; det skal konkurrere på huskvalitet, ro, vand og pris.",
+      "best_for": [
+        "Value og ro",
+        "Kystnær småbystemning",
+        "Service via Maribo",
+        "Lang-weekend og feriebrug"
+      ],
+      "watch_outs": [
+        "Transport fra København er i den lange ende; PT vil ofte være en klar caveat",
+        "Kystnære/lavtliggende grunde ved Smålandsfarvandet skal flood-tjekkes",
+        "Markedet kan være mindre likvidt end Sjælland og Møn",
+        "Turisme omkring Knuthenborg/Bandholm kan give sæsonvariation"
+      ],
+      "transport_note": "Bil er den realistiske baseline; offentlig transport skal tjekkes konkret via Maribo/Bandholm og kan være over 2 timer fra København.",
+      "service_note": "Maribo giver regional service tæt på, mens Bandholm selv er mindre; indkøb/helårsservice skal kontrolleres på adressebasis.",
+      "sources": [
+        {
+          "title": "Visit Lolland-Falster",
+          "url": "https://www.visitlolland-falster.dk/"
+        },
+        {
+          "title": "Lolland Kommune",
+          "url": "https://www.lolland.dk/"
+        },
+        {
+          "title": "Rejseplanen",
+          "url": "https://www.rejseplanen.dk/"
+        },
+        {
+          "title": "Kystdirektoratet",
+          "url": "https://kyst.dk/"
+        }
+      ]
+    }
+  ],
+  "proposed_profile_updates": [
+    {
+      "id": "moen-ulvshale",
+      "rationale_da": "Eksisterende profil er relevant, men bør få tydeligere manuel due-diligence på naturbeskyttelse, kyst/lavbund og offentlig transport, så Møn ikke scores som ren drøm uden praktiske caveats.",
+      "suggested_changes": {
+        "watch_outs": [
+          "Tjek strandbeskyttelse, fredning/Natura 2000 og adgangsforhold ved Ulvshale, Nyord-nære områder og klintekyst",
+          "PT fra København kan være over ønsket mål, især til yderområder uden for Stege",
+          "Kystnære/lavtliggende adresser bør screenes i KAMP og kommunale kort før shortlist"
+        ],
+        "transport_note": "Brofast og følelsesmæssigt stærkt, men bør som standard markeres med PT-caveat; bil er realistisk, offentlig transport skal dokumenteres pr. adresse.",
+        "sources": [
+          {
+            "title": "Visit Sydsjælland & Møn",
+            "url": "https://www.sydsjaellandmoen.dk/"
+          },
+          {
+            "title": "Vordingborg Kommune",
+            "url": "https://www.vordingborg.dk/"
+          },
+          {
+            "title": "Naturstyrelsen",
+            "url": "https://naturstyrelsen.dk/"
+          },
+          {
+            "title": "Klimatilpasning KAMP",
+            "url": "https://kamp.klimatilpasning.dk/"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Vordingborg Kommune",
+          "url": "https://www.vordingborg.dk/"
+        },
+        {
+          "title": "Klimatilpasning KAMP",
+          "url": "https://kamp.klimatilpasning.dk/"
+        }
+      ]
+    },
+    {
+      "id": "boetoe-sydfalster",
+      "rationale_da": "Bøtø-profilen bør skærpes på lavbund/flood og PT, men stadig beholdes som naturorienteret alternativ til Marielyst centrum.",
+      "suggested_changes": {
+        "watch_outs": [
+          "Bøtø Nor/lavbund og stormflod bør altid screenes manuelt; risiko er ikke automatisk afslag, men skal prissættes",
+          "PT fra København er sandsynligvis over mål og bør tydeligt markeres i dashboard/noter",
+          "Sommertrafik og afstand til indkøb varierer meget mellem roligere natur-lommer og Marielyst-nære dele"
+        ],
+        "sources": [
+          {
+            "title": "Guldborgsund Kommune",
+            "url": "https://www.guldborgsund.dk/"
+          },
+          {
+            "title": "Visit Lolland-Falster",
+            "url": "https://www.visitlolland-falster.dk/"
+          },
+          {
+            "title": "Klimatilpasning KAMP",
+            "url": "https://kamp.klimatilpasning.dk/"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Guldborgsund Kommune",
+          "url": "https://www.guldborgsund.dk/"
+        },
+        {
+          "title": "Klimatilpasning KAMP",
+          "url": "https://kamp.klimatilpasning.dk/"
+        }
+      ]
+    },
+    {
+      "id": "lolland-sydkyst",
+      "rationale_da": "Sydlolland bør fortsat være value-spor, men have en hårdere transport-/stormflodsmarkering og en tydelig sondring mellem billig pris og faktisk brugbarhed fra København.",
+      "suggested_changes": {
+        "area_fit_score": 62,
+        "watch_outs": [
+          "Stormflod, diger, lavbund og adgangsveje skal screenes på konkret adresse før shortlist",
+          "PT er normalt en dealbreaker; biltransport er i øvre ende af acceptabelt og bedst til længere ophold",
+          "Femern-/infrastrukturpåvirkning kan være positivt eller negativt lokalt og bør tjekkes ved konkrete huse"
+        ],
+        "sources": [
+          {
+            "title": "Lolland Kommune",
+            "url": "https://www.lolland.dk/"
+          },
+          {
+            "title": "Kystdirektoratet",
+            "url": "https://kyst.dk/"
+          },
+          {
+            "title": "Rejseplanen",
+            "url": "https://www.rejseplanen.dk/"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Lolland Kommune",
+          "url": "https://www.lolland.dk/"
+        },
+        {
+          "title": "Kystdirektoratet",
+          "url": "https://kyst.dk/"
+        }
+      ]
+    },
+    {
+      "id": "holbaek-fjord",
+      "rationale_da": "Profilen nævner Orø som ferry-afhængig, men bør også fremhæve de vejfaste fjordlommer som praktisk value-modvægt og markere lavtliggende fjordkyster mere eksplicit.",
+      "suggested_changes": {
+        "watch_outs": [
+          "Hold Orø og andre færgeafhængige løsninger ude af automatisk match, medmindre bruger eksplicit accepterer færge",
+          "Fjordnære/lavtliggende adresser ved Holbæk Fjord og Lammefjord skal flood-/lavbundstjekkes",
+          "Vurder om huset faktisk føles som sommerhus/natur og ikke blot almindelig forstad eller landsbyhus"
+        ],
+        "best_for": [
+          "Serviceadgang",
+          "Fjord/natur",
+          "Ikke for isoleret",
+          "Praktisk weekendbrug fra København"
+        ],
+        "sources": [
+          {
+            "title": "Holbæk Kommune",
+            "url": "https://holbaek.dk/"
+          },
+          {
+            "title": "VisitFjordlandet",
+            "url": "https://www.visitfjordlandet.dk/"
+          },
+          {
+            "title": "Klimatilpasning KAMP",
+            "url": "https://kamp.klimatilpasning.dk/"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Holbæk Kommune",
+          "url": "https://holbaek.dk/"
+        },
+        {
+          "title": "Klimatilpasning KAMP",
+          "url": "https://kamp.klimatilpasning.dk/"
+        }
+      ]
+    }
+  ],
+  "areas_considered_but_rejected": [
+    {
+      "name": "Bornholm / Dueodde / Balka",
+      "reason_da": "Fravalgt uanset natur- og strandkvalitet, fordi Bornholm kræver færge/fly og ligger uden for brugerens eksplicitte Sjælland + broforbundne Møn/Falster/Lolland-scope.",
+      "sources": [
+        {
+          "title": "Bornholms Regionskommune",
+          "url": "https://www.brk.dk/"
+        }
+      ]
+    },
+    {
+      "name": "Sejerø / Nekselø som ø-spor",
+      "reason_da": "Fravalgt i denne workflow-test, fordi øerne er færgeafhængige. Fastlandsnære alternativer i Odsherred/Kalundborg kan stadig være relevante, men selve ø-sporet matcher ikke access-kravet.",
+      "sources": [
+        {
+          "title": "Kalundborg Kommune",
+          "url": "https://www.kalundborg.dk/"
+        },
+        {
+          "title": "VisitVestsjælland",
+          "url": "https://www.visitvestsjaelland.dk/"
+        }
+      ]
+    },
+    {
+      "name": "Fejø / Femø / Askø",
+      "reason_da": "Fravalgt trods mulig value og charme, fordi adgang er færgebaseret og derfor uden for den bro-/vejfaste geografi i denne researchrunde.",
+      "sources": [
+        {
+          "title": "Lolland Kommune",
+          "url": "https://www.lolland.dk/"
+        },
+        {
+          "title": "Visit Lolland-Falster",
+          "url": "https://www.visitlolland-falster.dk/"
+        }
+      ]
+    },
+    {
+      "name": "Dragør / Amager Strand / Københavnsnære kystlommer",
+      "reason_da": "Fravalgt som hovedområde, fordi nærheden til København sandsynligvis giver for høj pris-/prestigepræmie i forhold til ønsket om 2,0-2,5 mio. kr. value og ægte sommerhusfølelse. Kan bruges som transportbenchmark, ikke som primært jagtområde.",
+      "sources": [
+        {
+          "title": "Dragør Kommune",
+          "url": "https://www.dragoer.dk/"
+        },
+        {
+          "title": "Københavns Kommune",
+          "url": "https://www.kk.dk/"
+        }
+      ]
+    }
+  ],
+  "manual_review_checklist_da": [
+    "Tjek konkrete boliger mod budget: ideelt 2,0-2,5 mio. kr., maks ca. 3 mio. kr. indflytningsklart, renoveringscases kun hvis totalen kan holdes omkring 2 mio. kr.",
+    "Kør konkret rejsetid fra København med både bil og Rejseplanen på weekendtid; PT lidt over 2 timer skal advares, ikke skjules.",
+    "Tjek services: dagligvarer, byggemarked, læge/apotek og større by inden for ca. 20 min. i bil.",
+    "Screen KAMP, kommunale klima-/oversvømmelseskort, Kystdirektoratet og salgsopstilling for stormflod, lavbund, erosion, sokkel/fugt og adgangsveje.",
+    "Skeln mellem fakta og agent-opinion ved review: kilder dokumenterer område/transport/risiko, mens area_fit_score og hidden_gem_score er prioriteret agentvurdering.",
+    "Undgå duplikater med eksisterende profiler: nye forslag dækker særskilte delområder eller praktiske vinkler, ikke Bornholm/færgeøer."
+  ]
+}

@@ -1,0 +1,683 @@
+[
+  {
+    "id": "stillinge-kongsmark",
+    "name": "Stillinge Strand / Kongsmark",
+    "region": "Vestsjælland",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        4200,
+        4200
+      ]
+    ],
+    "match_terms": [
+      "Stillinge",
+      "Kongsmark",
+      "Kelstrup Strand"
+    ],
+    "area_fit_score": 88,
+    "hidden_gem_score": 84,
+    "vibe": "Nede-på-jorden strandliv med bedre værdi end de mest hypede nordkystbyer.",
+    "opinionated_take": "Jeg synes dette er et af de mest relevante value-spor: strand, sommerhusstemning og stadig realistisk fra København. Det er ikke lige så poleret som Rørvig/Tisvilde, men netop derfor kan pengene række længere.",
+    "best_for": [
+      "Pris/value",
+      "Strand uden prestigepræmie",
+      "Familiebrug"
+    ],
+    "watch_outs": [
+      "Offentlig transport skal tjekkes konkret",
+      "Nogle lommer er mere parcelhusagtige end idylliske"
+    ],
+    "transport_note": "Typisk stærkest med bil fra København; offentlig transport kan være acceptabel men varierer meget efter præcis adresse.",
+    "service_note": "Slagelse giver stærk servicebase; lokale indkøbsmuligheder afhænger af præcis delområde.",
+    "sources": [
+      {
+        "title": "VisitVestsjælland: Stillinge Strand",
+        "url": "https://www.visitvestsjaelland.dk/"
+      },
+      {
+        "title": "Slagelse Kommune",
+        "url": "https://www.slagelse.dk/"
+      }
+    ]
+  },
+  {
+    "id": "faxe-ladeplads",
+    "name": "Faxe Ladeplads / Feddet / Præstø Fjord",
+    "region": "Sydøstsjælland",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        4640,
+        4640
+      ],
+      [
+        4654,
+        4654
+      ],
+      [
+        4720,
+        4720
+      ]
+    ],
+    "match_terms": [
+      "Faxe Ladeplads",
+      "Feddet",
+      "Jungshoved",
+      "Praestoe",
+      "Praestoe Fjord",
+      "Præstø",
+      "Præstø Fjord"
+    ],
+    "area_fit_score": 87,
+    "hidden_gem_score": 82,
+    "vibe": "Skov, strand og småbyliv uden at være så dyrt/hypet som nordkysten.",
+    "opinionated_take": "Meget relevant for jer: stadig Sjælland, stærk naturfølelse og bedre value end de mest hypede områder. Jeg ville især kigge efter lommer ved Præstø Fjord, Feddet og Jungshoved — men være kritisk over for adresser der bare er billige uden egentlig vand/natur-følelse.",
+    "best_for": [
+      "Natur + vand",
+      "Value",
+      "Ikke for langt fra København"
+    ],
+    "watch_outs": [
+      "Feddet/camping-resort kan give mere liv og trafik i højsæson",
+      "Lavtliggende kystlommer skal flood-tjekkes",
+      "Nogle områder er camping/turisme-tunge",
+      "Tjek lavtliggende kyst og fjordnære adresser for flood-risiko"
+    ],
+    "transport_note": "Ofte realistisk i bil; offentlig transport skal vurderes pr. adresse.",
+    "service_note": "Faxe, Præstø og Vordingborg giver rimelige serviceankre.",
+    "sources": [
+      {
+        "title": "Visit Sydsjælland & Møn: Præstø Fjord",
+        "url": "https://www.sydsjaellandmoen.dk/praestoefjord"
+      },
+      {
+        "title": "Visit Sydsjælland & Møn: Feddet",
+        "url": "https://www.sydsjaellandmoen.dk/feddet"
+      },
+      {
+        "title": "Visit Sydsjælland & Møn: Faxe Ladeplads",
+        "url": "https://www.sydsjaellandmoen.dk/faxeladeplads"
+      },
+      {
+        "title": "Faxe Kommune",
+        "url": "https://www.faxekommune.dk/"
+      }
+    ]
+  },
+  {
+    "id": "reerso-mullerup",
+    "name": "Reersø / Mullerup / Dalby Strand",
+    "region": "Vestsjælland",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        4281,
+        4281
+      ],
+      [
+        4400,
+        4400
+      ]
+    ],
+    "match_terms": [
+      "Reersø",
+      "Reerso",
+      "Mullerup",
+      "Dalby Strand",
+      "Bjerge Strand"
+    ],
+    "area_fit_score": 86,
+    "hidden_gem_score": 90,
+    "vibe": "Mere landsby, kyst og natur end klassisk badeby — på den gode måde.",
+    "opinionated_take": "Dette er en rigtig hidden-gem-kandidat, hvis du accepterer at det føles længere væk og mindre bekvemt. Jeg ville kigge her efter personlighed, natur og lavere konkurrence — men være streng på transport og service.",
+    "best_for": [
+      "Ro",
+      "Natur",
+      "Mindre kendt kystområde"
+    ],
+    "watch_outs": [
+      "Kan blive for afsides",
+      "Tjek indkøb og offentlig transport nøje"
+    ],
+    "transport_note": "Bil er klart nemmest; offentlig transport kan hurtigt blive en dealbreaker.",
+    "service_note": "Kalundborg/Gørlev-området er servicebase; præcis afstand betyder meget.",
+    "sources": [
+      {
+        "title": "VisitVestsjælland",
+        "url": "https://www.visitvestsjaelland.dk/"
+      },
+      {
+        "title": "Kalundborg Kommune",
+        "url": "https://www.kalundborg.dk/"
+      }
+    ]
+  },
+  {
+    "id": "odsherred-sejeroebugten",
+    "name": "Odsherred / Sejerøbugten uden ø-færge",
+    "region": "Nordvestsjælland",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        4500,
+        4593
+      ]
+    ],
+    "match_terms": [
+      "Nykøbing Sj",
+      "Nykobing Sj",
+      "Vig",
+      "Højby",
+      "Hoejby",
+      "Gudmindrup",
+      "Ellinge Lyng",
+      "Sejerøbugten"
+    ],
+    "area_fit_score": 83,
+    "hidden_gem_score": 70,
+    "vibe": "Klassisk sommerhusland med stærk natur og strand, men mange andre kigger også her.",
+    "opinionated_take": "Odsherred er oplagt, men ikke nødvendigvis hidden gem. Jeg ville stadig kigge, fordi området matcher ønsket om vand/natur, men value-filteret skal være hårdt — ellers betaler man for et kendt navn.",
+    "best_for": [
+      "Klassisk sommerhusfølelse",
+      "Strand",
+      "Natur"
+    ],
+    "watch_outs": [
+      "Kan være overkonkurreret",
+      "Transport med offentlig kan være lidt over ønsket"
+    ],
+    "transport_note": "Bil er typisk ok; offentlig transport kan blive lang afhængigt af placering.",
+    "service_note": "Nykøbing Sj, Vig og Asnæs giver gode lokale servicepunkter.",
+    "sources": [
+      {
+        "title": "VisitOdsherred",
+        "url": "https://www.visitodsherred.dk/"
+      },
+      {
+        "title": "Odsherred Kommune",
+        "url": "https://www.odsherred.dk/"
+      }
+    ]
+  },
+  {
+    "id": "stevns-kyst",
+    "name": "Stevns kystbyer",
+    "region": "Østsjælland",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        4660,
+        4673
+      ]
+    ],
+    "match_terms": [
+      "Stevns",
+      "Rødvig",
+      "Roedvig",
+      "Strøby",
+      "Stroeby",
+      "Højerup",
+      "Hoejerup"
+    ],
+    "area_fit_score": 82,
+    "hidden_gem_score": 72,
+    "vibe": "Dramatisk kyst, landsbyer og kortere afstand — men ikke altid billigt.",
+    "opinionated_take": "Stevns er stærk, fordi det kombinerer natur/kyst med relativ nærhed til København. Jeg ville dog være kræsen: nogle huse får en nærheds-premium uden at have den private sommerhusfølelse du ønsker.",
+    "best_for": [
+      "Kortere rejsetid",
+      "Kyst/natur",
+      "Helårsbrug"
+    ],
+    "watch_outs": [
+      "Kan være dyrere end value-sporene mod vest/syd",
+      "Klint/kystforhold og erosion bør tjekkes"
+    ],
+    "transport_note": "Ofte mere realistisk end Sydsjælland med offentlig transport, men sidste kilometer betyder meget.",
+    "service_note": "Køge/Store Heddinge/Rødvig giver rimelig base afhængigt af adresse.",
+    "sources": [
+      {
+        "title": "Visit Stevns",
+        "url": "https://www.visitstevns.dk/"
+      },
+      {
+        "title": "Stevns Kommune",
+        "url": "https://www.stevns.dk/"
+      }
+    ]
+  },
+  {
+    "id": "bisserup-glaenoe",
+    "name": "Bisserup / Glænø / Skælskør-egnen",
+    "region": "Sydvestsjælland",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        4230,
+        4230
+      ],
+      [
+        4243,
+        4243
+      ]
+    ],
+    "match_terms": [
+      "Bisserup",
+      "Glænø",
+      "Glaenoe",
+      "Skælskør",
+      "Skaelskoer",
+      "Agersøvej"
+    ],
+    "area_fit_score": 82,
+    "hidden_gem_score": 86,
+    "vibe": "Små havne, sydvestsjællandsk kyst og mere diskret charme end de kendte feriebyer.",
+    "opinionated_take": "Meget lovende hidden-gem-spor: mindre hypet, ofte mere personligt og stadig brofast Sjælland. Jeg ville især lede efter huse der kombinerer ro med acceptabel køretid til Skælskør/Slagelse/Næstved.",
+    "best_for": [
+      "Hidden gem",
+      "Ro",
+      "Kyst og småbyfølelse"
+    ],
+    "watch_outs": [
+      "Bil er nødvendig",
+      "Mindre ferieby-service lige udenfor døren",
+      "Glænø kan føles mere afsides selv om det er vejforbundet"
+    ],
+    "transport_note": "Realistisk med bil; offentlig transport skal tjekkes pr. adresse.",
+    "service_note": "Skælskør, Slagelse og Næstved kan fungere som servicebase afhængigt af placering.",
+    "sources": [
+      {
+        "title": "Destination Sjælland: kyst- og naturoplevelser",
+        "url": "https://destinationsjaelland.dk/inspiration/kyst-og-naturoplevelser-i-destination-sjaelland/"
+      },
+      {
+        "title": "Destination Sjælland: Bisserup",
+        "url": "https://destinationsjaelland.dk/partnere/overnatning/bisserup-camping/"
+      }
+    ]
+  },
+  {
+    "id": "holbaek-fjord",
+    "name": "Holbæk Fjord / Tuse Næs / Orø-kysten uden ferry-afhængighed",
+    "region": "Nordvestsjælland",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        4300,
+        4300
+      ],
+      [
+        4390,
+        4390
+      ]
+    ],
+    "match_terms": [
+      "Holbæk",
+      "Holbaek",
+      "Tuse",
+      "Udby",
+      "Kisserup",
+      "Lammefjord"
+    ],
+    "area_fit_score": 81,
+    "hidden_gem_score": 76,
+    "vibe": "Fjord, små landskaber og bedre hverdagspraktik end meget fjerntliggende sommerhusland.",
+    "opinionated_take": "Godt kompromisområde. Ikke nødvendigvis klassisk postkort-sommerhus, men praktisk, naturnært og ofte mere brugbart i hverdagen. Jeg ville bruge det som modvægt til de mere romantiske men upraktiske områder.",
+    "best_for": [
+      "Serviceadgang",
+      "Fjord/natur",
+      "Ikke for isoleret"
+    ],
+    "watch_outs": [
+      "Undgå at betale sommerhuspris for noget der føles som almindelig forstad",
+      "Orø kræver færge og skal normalt frasorteres"
+    ],
+    "transport_note": "Holbæk-aksen kan være fornuftig fra København; konkrete sommerhuslommer varierer.",
+    "service_note": "Holbæk er en stærk serviceby tæt på mange lommer.",
+    "sources": [
+      {
+        "title": "VisitFjordlandet",
+        "url": "https://www.visitfjordlandet.dk/"
+      },
+      {
+        "title": "Holbæk Kommune",
+        "url": "https://holbaek.dk/"
+      }
+    ]
+  },
+  {
+    "id": "karrebaeksminde-enkelt",
+    "name": "Karrebæksminde / Enø",
+    "region": "Sydvestsjælland",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        4736,
+        4736
+      ],
+      [
+        4700,
+        4700
+      ]
+    ],
+    "match_terms": [
+      "Karrebæksminde",
+      "Karrebaeksminde",
+      "Enø",
+      "Enoe"
+    ],
+    "area_fit_score": 78,
+    "hidden_gem_score": 55,
+    "vibe": "Charmerende og populært havne-/strandmiljø, men ikke ukendt.",
+    "opinionated_take": "Godt område, men ikke en skjult perle. Jeg ville se det som en livlig sommerby med reel service og Enø-natur: stærkt hvis huset er rigtigt prissat, mindre stærkt hvis man betaler for havne-/sommerbyhypen uden privathed.",
+    "best_for": [
+      "Sommerstemning",
+      "Service tættere på",
+      "Familiebrug"
+    ],
+    "watch_outs": [
+      "For ro bør man kigge længere ud på Enø eller væk fra centrum",
+      "Lavtliggende dele bør flood-tjekkes",
+      "Meget liv omkring havn, kanal og Græshoppebroen i højsæson",
+      "Populært område kan betyde mindre value"
+    ],
+    "transport_note": "Næstved gør området mere praktisk, men offentlig transport helt til huset skal tjekkes.",
+    "service_note": "Næstved er en stærk serviceby tæt på.",
+    "sources": [
+      {
+        "title": "Visit Sydsjælland & Møn: Karrebæksminde",
+        "url": "https://www.sydsjaellandmoen.dk/karrebaeksminde"
+      },
+      {
+        "title": "Visit Sydsjælland & Møn: Næstved",
+        "url": "https://www.sydsjaellandmoen.dk/naestved"
+      },
+      {
+        "title": "Næstved Kommune",
+        "url": "https://www.naestved.dk/"
+      }
+    ]
+  },
+  {
+    "id": "moen-ulvshale",
+    "name": "Møn / Ulvshale / Stege",
+    "region": "Møn",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        4780,
+        4792
+      ]
+    ],
+    "match_terms": [
+      "Møn",
+      "Moen",
+      "Stege",
+      "Ulvshale",
+      "Borre",
+      "Klintholm"
+    ],
+    "area_fit_score": 76,
+    "hidden_gem_score": 68,
+    "vibe": "Premium-natur, Dark Sky, Møns Klint og stærk stedfølelse — men længere væk.",
+    "opinionated_take": "Møn er emotionelt stærkt og har mere identitet end næsten alle andre områder. Jeg ville dog kun lade det vinde, hvis huset er virkelig godt, fordi transport og hverdagsbrug kan skubbe det væk fra jeres spontane sommerhusmål.",
+    "best_for": [
+      "Natur",
+      "Særpræg",
+      "Lang-weekend følelse"
+    ],
+    "watch_outs": [
+      "Kan være for fjernt til spontan brug",
+      "Popularitet/turisme kan presse priser og ro",
+      "Rejsetid og offentlig transport",
+      "Tjek naturbeskyttelse/adgangsforhold ved Ulvshale og Nyord-nære områder"
+    ],
+    "transport_note": "Brofast, men langt nok væk til at hverdagsbrug skal vurderes ærligt.",
+    "service_note": "Stege er vigtig servicebase; yderområder kræver mere planlægning.",
+    "sources": [
+      {
+        "title": "Visit Møn",
+        "url": "https://www.sydsjaellandmoen.dk/moen/"
+      },
+      {
+        "title": "Vordingborg Kommune",
+        "url": "https://www.vordingborg.dk/"
+      }
+    ]
+  },
+  {
+    "id": "hesnaes-pomle-nakke",
+    "name": "Hesnæs / Pomle Nakke / Nordfalsters østkyst",
+    "region": "Falster",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        4850,
+        4850
+      ],
+      [
+        4863,
+        4863
+      ]
+    ],
+    "match_terms": [
+      "Hesnæs",
+      "Hesnaes",
+      "Pomle Nakke",
+      "Horbelev",
+      "Nordfalster"
+    ],
+    "area_fit_score": 74,
+    "hidden_gem_score": 78,
+    "vibe": "Skov, kystskrænter, lille havnemiljø og roligere profil end de store feriebyer.",
+    "opinionated_take": "Det her er mere hidden-gem end Marielyst: mindre oplagt, mere natur/privathed, men også færre services og mindre marked. Jeg ville kigge her efter noget personligt — ikke efter maximal bekvemmelighed.",
+    "best_for": [
+      "Ro",
+      "Natur",
+      "Mindre kendt kyst"
+    ],
+    "watch_outs": [
+      "Kræver bil",
+      "Mindre lokalt servicelag",
+      "Få huse kan gøre markedet tyndt"
+    ],
+    "transport_note": "Brofast, men langt nok væk til at transport skal vurderes ærligt.",
+    "service_note": "Nykøbing Falster/Stubbekøbing er serviceankre; ikke super lokalt.",
+    "sources": [
+      {
+        "title": "Visit Lolland-Falster: naturoplevelser",
+        "url": "https://www.visitlolland-falster.dk/naturoplevelser"
+      }
+    ]
+  },
+  {
+    "id": "boetoe-sydfalster",
+    "name": "Bøtø / Bøtø Nor syd for Marielyst",
+    "region": "Falster",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        4872,
+        4873
+      ]
+    ],
+    "match_terms": [
+      "Bøtø",
+      "Boetoe",
+      "Bøtø Nor",
+      "Boto",
+      "Sydfalster"
+    ],
+    "area_fit_score": 72,
+    "hidden_gem_score": 62,
+    "vibe": "Natur- og fuglelivspræget alternativ til at bo midt i Marielyst.",
+    "opinionated_take": "Interessant hvis man vil have adgang til Marielysts strand og service, men bo lidt roligere. Jeg ser det som “Marielyst, men med bedre chance for naturfølelse” — dog stadig langt fra København.",
+    "best_for": [
+      "Strand + natur",
+      "Mere ro end Marielyst centrum",
+      "Udlejning som bonus"
+    ],
+    "watch_outs": [
+      "Tjek lavbund/fugt og flood-risiko",
+      "Sommertrafik og afstand til indkøb varierer",
+      "Offentlig transport er sandsynligvis en advarsel"
+    ],
+    "transport_note": "Bil er realistisk; offentlig transport bør markeres som mulig svaghed.",
+    "service_note": "Marielyst/Nykøbing Falster giver service, men præcis adresse betyder meget.",
+    "sources": [
+      {
+        "title": "Visit Lolland-Falster: naturoplevelser",
+        "url": "https://www.visitlolland-falster.dk/naturoplevelser"
+      }
+    ]
+  },
+  {
+    "id": "marielyst-falster",
+    "name": "Marielyst / Falster østkyst",
+    "region": "Falster",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        4872,
+        4873
+      ]
+    ],
+    "match_terms": [
+      "Marielyst",
+      "Væggerløse",
+      "Vaeggerloese",
+      "Falster"
+    ],
+    "area_fit_score": 68,
+    "hidden_gem_score": 35,
+    "vibe": "Stor, etableret ferieby med strand og aktivitet — ikke subtilt eller skjult.",
+    "opinionated_take": "Jeg vil være lidt skeptisk for jer. Det kan være god value og god strand, men det er ikke den stille, personlige hidden-gem-følelse. Kun interessant hvis prisen er stærk, huset er godt, og I accepterer ferieby-viben.",
+    "best_for": [
+      "Strand",
+      "Udlejning som bonus",
+      "Mere hus for pengene"
+    ],
+    "watch_outs": [
+      "Langere rejsetid",
+      "Mindre privat/rolig stemning i højsæson",
+      "Flood/lavtliggende forhold skal tjekkes"
+    ],
+    "transport_note": "Brofast, men langt fra København — offentlig transport kan være svag.",
+    "service_note": "Marielyst/Nykøbing Falster giver services, men afstand fra København er hovedissue.",
+    "sources": [
+      {
+        "title": "Visit Lolland-Falster",
+        "url": "https://www.visitlolland-falster.dk/"
+      },
+      {
+        "title": "Guldborgsund Kommune",
+        "url": "https://www.guldborgsund.dk/"
+      }
+    ]
+  },
+  {
+    "id": "lolland-sydkyst",
+    "name": "Hummingen / Kramnitse / Dannemare på Lollands sydkyst",
+    "region": "Lolland",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        4983,
+        4983
+      ],
+      [
+        4970,
+        4970
+      ]
+    ],
+    "match_terms": [
+      "Hummingen",
+      "Kramnitse",
+      "Dannemare",
+      "Rødby",
+      "Roedby",
+      "Lolland sydkyst"
+    ],
+    "area_fit_score": 64,
+    "hidden_gem_score": 70,
+    "vibe": "Pris/value, hav, diger og ro — men klart længere væk.",
+    "opinionated_take": "Relevant som value-spor, ikke som intuitivt weekend-spor. Hvis målet er meget hus for pengene og ro tæt på havet, kan det være spændende; hvis målet er spontan brug fra København, er jeg skeptisk.",
+    "best_for": [
+      "Lavere pris",
+      "Ro",
+      "Mere hus for pengene"
+    ],
+    "watch_outs": [
+      "Lang transport fra København",
+      "Svag offentlig transport",
+      "Stormflod/diger/lavbund skal tjekkes grundigt",
+      "Femern-korridor/byggeaktivitet kan påvirke nogle lommer"
+    ],
+    "transport_note": "Bil nødvendig; offentlig transport bør næsten altid være advarsel.",
+    "service_note": "Rødby/Maribo/Nakskov afhængigt af adresse; tjek hverdagsindkøb konkret.",
+    "sources": [
+      {
+        "title": "Visit Lolland-Falster: naturoplevelser",
+        "url": "https://www.visitlolland-falster.dk/naturoplevelser"
+      }
+    ]
+  },
+  {
+    "id": "tiszvilde-benchmark",
+    "name": "Tisvilde / Vejby / Rågeleje som benchmark",
+    "region": "Nordsjælland",
+    "language": "da",
+    "access_scope": "sjælland_bridge_connected",
+    "postal_ranges": [
+      [
+        3210,
+        3220
+      ]
+    ],
+    "match_terms": [
+      "Tisvilde",
+      "Vejby",
+      "Rågeleje",
+      "Raageleje"
+    ],
+    "area_fit_score": 63,
+    "hidden_gem_score": 20,
+    "vibe": "Klassisk, eftertragtet og dyr nordkyst.",
+    "opinionated_take": "Jeg ville bruge dette som kvalitets-benchmark, ikke som hovedjagtområde. Hvis noget dukker op under budget med 3 soveværelser, er det spændende — men udgangspunktet er, at value sandsynligvis er bedre andre steder.",
+    "best_for": [
+      "Drømmebenchmark",
+      "Kendt sommerhusmiljø",
+      "Natur/strand"
+    ],
+    "watch_outs": [
+      "Meget konkurrence",
+      "Prisniveau kan sabotere value",
+      "Risiko for at betale for navn fremfor hus"
+    ],
+    "transport_note": "Relativt godt fra København sammenlignet med Sydsjælland, men prisen er hovedproblemet.",
+    "service_note": "Gode lokale services i sæson og stærk nordkyst-infrastruktur.",
+    "sources": [
+      {
+        "title": "VisitNordsjælland",
+        "url": "https://www.visitnordsjaelland.dk/"
+      },
+      {
+        "title": "Gribskov Kommune",
+        "url": "https://gribskov.dk/"
+      }
+    ]
+  }
+]
