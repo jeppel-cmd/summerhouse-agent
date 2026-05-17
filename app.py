@@ -29,6 +29,11 @@ def index():
     return render_template("index.html")
 
 
+@app.get("/today")
+def today():
+    return render_template("today.html")
+
+
 @app.get("/api/listings")
 def api_listings():
     filters = {

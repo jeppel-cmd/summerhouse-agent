@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dagens top 5 · Sommerhus Agent</title>
+  <meta name="description" content="Dagens fem fremhævede sommerhuse fra Sommerhus Agent.">
+  <link rel="stylesheet" href="/static/style.css?v=today-top5-20260517">
+</head>
+<body class="today-page">
+  <header class="today-hero">
+    <nav class="today-nav" aria-label="Dagens shortlist navigation">
+      <a class="today-brand" href="/today" aria-label="Dagens top 5">
+        <span class="eyebrow">Sommerhus Agent</span>
+        <strong>Dagens top 5</strong>
+      </a>
+      <div class="today-nav-actions">
+        <a href="/" class="today-link">Fuld dashboard</a>
+        <button id="todayRefresh" class="secondary">Opdater</button>
+      </div>
+    </nav>
+    <section class="today-hero-copy">
+      <span class="eyebrow">Fast link · kun dagens shortlist</span>
+      <h1>Dagens 5 sommerhuse, der er værd at åbne først.</h1>
+      <p>En ren landing page uden filtre, kort eller støj — kun agentens fem bedste bud fra dagens anbefalinger.</p>
+      <div class="today-hero-meta" aria-label="Status">
+        <div><span id="todayDate">-</span><label>Dato</label></div>
+        <div><span id="todayCount">-</span><label>Huse vist</label></div>
+        <div><span id="todayUpdated">-</span><label>Sidst hentet</label></div>
+      </div>
+    </section>
+  </header>
+
+  <main class="today-main">
+    <div id="todayStatus" class="global-status"></div>
+    <section id="todayList" class="today-list" aria-label="Dagens top 5">
+      <div class="loading">Henter dagens top 5...</div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-panel">
+      <button class="modal-close" id="modalClose" aria-label="Luk">×</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+  <script src="/static/today.js?v=today-top5-20260517"></script>
+</body>
+</html>
