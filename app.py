@@ -91,6 +91,13 @@ def api_recommendations():
         return jsonify(recommendations.latest_categories(conn))
 
 
+@app.get("/api/public/today")
+def api_public_today():
+    with get_db() as conn:
+        items = recommendations.items_for_category(conn, "daily")
+    return jsonify(sorted(items, key=lambda item: item.get("fit_score") or 0, reverse=True)[:5])
+
+
 @app.post("/api/recommendations/generate")
 def api_generate_recommendations():
     with get_db() as conn:

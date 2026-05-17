@@ -273,6 +273,11 @@ button:disabled { opacity: .6; cursor: default; }
   gap: 7px;
 }
 .card-actions a { display: inline-block; }
+.card-actions a.quiet-link {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--ink);
+}
 
 .match-layout {
   align-items: start;

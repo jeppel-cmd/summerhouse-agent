@@ -1,7 +1,6 @@
 "use strict";
 
 const kr = new Intl.NumberFormat("da-DK");
-let watchedIds = new Set();
 let todayItems = [];
 
 function esc(value) {
@@ -102,7 +101,7 @@ function topCard(item, index) {
   const externalUrl = `/api/listings/${encodeURIComponent(id)}/broker-redirect`;
   const image = item.image_url
     ? `<a class="today-rank-image" href="${esc(externalUrl)}" target="_blank" rel="noopener" aria-label="Åbn hos mægler" style="background-image:url('${esc(item.image_url)}')"></a>`
-    : `<button class="today-rank-image empty" data-action="details" data-id="${esc(id)}" aria-label="Åbn detaljer"></button>`;
+    : `<a class="today-rank-image empty" href="${esc(externalUrl)}" target="_blank" rel="noopener" aria-label="Åbn hos mægler"></a>`;
   return `<article class="today-rank-card">
     <div class="today-rank-number">#${index + 1}</div>
     ${image}
@@ -125,9 +124,8 @@ function topCard(item, index) {
       ${geoRiskSummary(item)}
       ${reasons(item, 4)}
       <div class="card-actions">
-        <button data-action="favorite" data-id="${esc(id)}" class="${watchedIds.has(id) ? "active" : ""}">${watchedIds.has(id) ? "Favorit ✓" : "Favorit"}</button>
-        <button data-action="details" data-id="${esc(id)}" class="quiet">Detaljer</button>
-        <a href="${esc(externalUrl)}" target="_blank" rel="noopener">Mægler</a>
+        <a href="${esc(externalUrl)}" target="_blank" rel="noopener">Åbn hos mægler</a>
+        <a href="/" class="quiet-link">Åbn privat dashboard</a>
       </div>
     </div>
   </article>`;
@@ -141,16 +139,13 @@ function renderToday() {
   target.innerHTML = topFive.length
     ? topFive.map((item, index) => topCard(item, index)).join("")
     : `<div class="empty">Der er ingen dagsliste endnu. Åbn dashboardet og tryk “Genberegn match”.</div>`;
-  attachActions(target);
 }
 
 async function loadToday() {
   setStatus("");
   document.getElementById("todayRefresh").disabled = true;
   try {
-    const [watchlist, daily] = await Promise.all([apiFetch("/api/watchlist"), apiFetch("/api/agent/daily")]);
-    watchedIds = new Set(watchlist.map((item) => String(item.listing_id)));
-    todayItems = daily;
+    todayItems = await apiFetch("/api/public/today");
     renderToday();
   } catch (error) {
     setStatus(error.message, "error");
@@ -158,72 +153,6 @@ async function loadToday() {
   } finally {
     document.getElementById("todayRefresh").disabled = false;
   }
-}
-
-function attachActions(root) {
-  root.querySelectorAll("[data-action]").forEach((el) => {
-    el.addEventListener("click", async (event) => {
-      event.preventDefault();
-      await handleAction(el.dataset.action, el.dataset.id);
-    });
-  });
-}
-
-async function handleAction(action, id) {
-  try {
-    if (action === "details") return openDetails(id);
-    if (action === "favorite") {
-      if (watchedIds.has(String(id))) {
-        await apiFetch(`/api/listings/${id}/watch`, { method: "DELETE" });
-        watchedIds.delete(String(id));
-        toast("Fjernet fra favoritter");
-      } else {
-        await apiFetch(`/api/listings/${id}/watch`, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
-        await apiFetch(`/api/listings/${id}/feedback`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ feedback_type: "favorite" }),
-        });
-        watchedIds.add(String(id));
-        toast("Tilføjet som favorit");
-      }
-      return renderToday();
-    }
-  } catch (error) {
-    toast(error.message, "err");
-  }
-}
-
-function geoRiskDetail(item) {
-  const risk = item.flood_risk || {};
-  const historical = risk.historical_flooding || {};
-  const detailRows = [];
-  if (risk.elevation_m != null) detailRows.push(metric("Terrænhøjde", `${risk.elevation_m} m.o.h.`));
-  if (risk.low_lying_level) detailRows.push(metric("Lavtliggende", floodLevelLabel(risk.low_lying_level)));
-  if (risk.warning_level) detailRows.push(metric("Samlet geo-risiko", floodLevelLabel(risk.warning_level)));
-  const dingeo = historical.dingeo_url ? `<p><a href="${esc(historical.dingeo_url)}" target="_blank" rel="noopener">Åbn adressen på DinGeo</a> for historiske/registrerede oversvømmelser.</p>` : "";
-  return `<section><h3>Geo- og oversvømmelsesrisiko</h3>${detailRows.length ? `<div class="metrics detail-metrics">${detailRows.join("")}</div>` : ""}<p>${esc(risk.warning_text || "Ikke undersøgt endnu.")}</p>${dingeo}</section>`;
-}
-
-async function openDetails(id) {
-  const modal = document.getElementById("modal");
-  const body = document.getElementById("modalBody");
-  modal.classList.remove("hidden");
-  document.body.classList.add("modal-open");
-  body.innerHTML = `<div class="loading">Henter analyse...</div>`;
-  const item = await apiFetch(`/api/listings/${id}/analysis`);
-  const externalUrl = `/api/listings/${encodeURIComponent(id)}/broker-redirect`;
-  body.innerHTML = `<article class="detail">
-    ${item.image_url ? `<a class="detail-image" href="${esc(externalUrl)}" target="_blank" rel="noopener" aria-label="Åbn hos mægler" style="background-image:url('${esc(item.image_url)}')"></a>` : ""}
-    <div class="detail-body">
-      <div class="card-head"><div><h2>${esc(item.address || "Ukendt adresse")}</h2><p>${esc([item.postal_code, item.city, item.region].filter(Boolean).join(" · "))}</p></div><div class="score ${scoreTone(item.fit_score)}"><b>${Math.round(item.fit_score || 0)}</b><span>match</span></div></div>
-      <div class="metrics detail-metrics">${metric("Pris", price(item.asking_price))}${metric("Kr/m²", item.price_per_m2 ? `${fmt(item.price_per_m2)} kr.` : "-")}${metric("Areal", item.size_m2 ? `${fmt(item.size_m2)} m²` : "-")}${metric("Værelser", item.rooms ?? "-")}${metric("Byggeår", item.year_built ?? "-")}${metric("Grund", item.lot_size ? `${fmt(item.lot_size)} m²` : "-")}${metric("Rejseproxy", travelLabel(item))}</div>
-      <section><h3>Agentens vurdering</h3>${reasons(item, 8)}</section>
-      ${geoRiskDetail(item)}
-      <div class="card-actions"><button data-action="favorite" data-id="${esc(id)}">Favorit</button><a href="${esc(externalUrl)}" target="_blank" rel="noopener">Mægler</a></div>
-    </div>
-  </article>`;
-  attachActions(body);
 }
 
 function closeModal() {
@@ -234,9 +163,6 @@ function closeModal() {
 function init() {
   document.getElementById("todayDate").textContent = new Date().toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long" });
   document.getElementById("todayRefresh").addEventListener("click", loadToday);
-  document.getElementById("modalClose").addEventListener("click", closeModal);
-  document.getElementById("modalBackdrop").addEventListener("click", closeModal);
-  document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeModal(); });
   loadToday();
 }
 

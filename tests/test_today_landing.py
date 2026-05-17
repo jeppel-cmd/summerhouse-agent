@@ -15,8 +15,11 @@ def test_today_landing_page_route_and_assets_exist() -> None:
     assert 'Dagens top 5' in today_html
     assert '/static/today.js' in today_html
     assert 'href="/today"' in index_html
-    assert '/api/agent/daily' in today_js
+    assert '/api/public/today' in today_js
     assert '.slice(0, 5)' in today_js
+    assert '/api/watchlist' not in today_js
+    assert '/api/listings/${id}/watch' not in today_js
+    assert 'data-action="favorite"' not in today_js
 
 
 def test_today_landing_page_has_no_dashboard_filters_or_map() -> None:
