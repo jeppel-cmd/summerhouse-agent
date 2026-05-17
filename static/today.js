@@ -2,6 +2,8 @@
 
 const kr = new Intl.NumberFormat("da-DK");
 let todayItems = [];
+let todayPayload = { history: [], date: null, generated_at: null };
+let selectedDate = new URLSearchParams(window.location.search).get("date") || null;
 
 function esc(value) {
   const div = document.createElement("div");
@@ -131,21 +133,68 @@ function topCard(item, index) {
   </article>`;
 }
 
+function prettyDate(value) {
+  if (!value) return "Dagens liste";
+  const parsed = new Date(`${value}T12:00:00`);
+  if (Number.isNaN(parsed.getTime())) return value;
+  return parsed.toLocaleDateString("da-DK", { weekday: "short", day: "numeric", month: "short" });
+}
+
+function generatedTime(value) {
+  if (!value) return "-";
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return String(value).slice(11, 16) || "-";
+  return parsed.toLocaleTimeString("da-DK", { hour: "2-digit", minute: "2-digit" });
+}
+
+function updateUrlDate(date) {
+  const url = new URL(window.location.href);
+  if (date) url.searchParams.set("date", date);
+  else url.searchParams.delete("date");
+  window.history.replaceState({}, "", url);
+}
+
+function renderHistory() {
+  const target = document.getElementById("todayHistoryList");
+  const history = todayPayload.history || [];
+  if (!history.length) {
+    target.innerHTML = `<div class="empty mini">Ingen historik endnu.</div>`;
+    return;
+  }
+  target.innerHTML = history.map((entry) => {
+    const active = entry.date === todayPayload.date;
+    const label = entry.date === history[0]?.date ? "Seneste" : prettyDate(entry.date);
+    return `<button class="history-day ${active ? "active" : ""}" data-date="${esc(entry.date)}">
+      <strong>${esc(label)}</strong>
+      <span>${esc(entry.date)} · ${esc(entry.item_count || 0)} huse</span>
+    </button>`;
+  }).join("");
+  target.querySelectorAll("[data-date]").forEach((button) => {
+    button.addEventListener("click", () => loadToday(button.dataset.date));
+  });
+}
+
 function renderToday() {
   const target = document.getElementById("todayList");
   const topFive = [...todayItems].sort((a, b) => (b.fit_score || 0) - (a.fit_score || 0)).slice(0, 5);
+  document.getElementById("todayDate").textContent = prettyDate(todayPayload.date);
   document.getElementById("todayCount").textContent = `${topFive.length}/5`;
-  document.getElementById("todayUpdated").textContent = new Date().toLocaleTimeString("da-DK", { hour: "2-digit", minute: "2-digit" });
+  document.getElementById("todayUpdated").textContent = generatedTime(todayPayload.generated_at);
   target.innerHTML = topFive.length
     ? topFive.map((item, index) => topCard(item, index)).join("")
-    : `<div class="empty">Der er ingen dagsliste endnu. Åbn dashboardet og tryk “Genberegn match”.</div>`;
+    : `<div class="empty">Der er ingen dagsliste for denne dato endnu.</div>`;
+  renderHistory();
 }
 
-async function loadToday() {
+async function loadToday(date = selectedDate) {
   setStatus("");
+  selectedDate = date || null;
+  updateUrlDate(selectedDate);
   document.getElementById("todayRefresh").disabled = true;
   try {
-    todayItems = await apiFetch("/api/public/today");
+    const url = selectedDate ? `/api/public/today?date=${encodeURIComponent(selectedDate)}` : "/api/public/today";
+    todayPayload = await apiFetch(url);
+    todayItems = todayPayload.items || [];
     renderToday();
   } catch (error) {
     setStatus(error.message, "error");
@@ -155,14 +204,9 @@ async function loadToday() {
   }
 }
 
-function closeModal() {
-  document.getElementById("modal").classList.add("hidden");
-  document.body.classList.remove("modal-open");
-}
-
 function init() {
-  document.getElementById("todayDate").textContent = new Date().toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long" });
-  document.getElementById("todayRefresh").addEventListener("click", loadToday);
+  document.getElementById("todayDate").textContent = "-";
+  document.getElementById("todayRefresh").addEventListener("click", () => loadToday(selectedDate));
   loadToday();
 }
 

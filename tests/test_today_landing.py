@@ -16,6 +16,9 @@ def test_today_landing_page_route_and_assets_exist() -> None:
     assert '/static/today.js' in today_html
     assert 'href="/today"' in index_html
     assert '/api/public/today' in today_js
+    assert 'date=${encodeURIComponent(selectedDate)}' in today_js
+    assert 'todayPayload.items' in today_js
+    assert 'renderHistory' in today_js
     assert '.slice(0, 5)' in today_js
     assert '/api/watchlist' not in today_js
     assert '/api/listings/${id}/watch' not in today_js

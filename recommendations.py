@@ -930,6 +930,63 @@ def latest_run_id(conn) -> int | None:
     return int(row["id"]) if row else None
 
 
+def daily_history_runs(conn, limit: int = 30) -> list[dict[str, Any]]:
+    rows = conn.execute(
+        """
+        SELECT r.id, substr(r.generated_at, 1, 10) AS date, r.generated_at,
+               COUNT(ri.id) AS item_count
+        FROM recommendation_runs r
+        JOIN recommendation_items ri ON ri.run_id = r.id AND ri.category = 'daily'
+        WHERE r.status = 'ok'
+          AND r.id IN (
+            SELECT MAX(id)
+            FROM recommendation_runs
+            WHERE status = 'ok'
+            GROUP BY substr(generated_at, 1, 10)
+          )
+        GROUP BY r.id
+        ORDER BY r.generated_at DESC
+        LIMIT ?
+        """,
+        (limit,),
+    ).fetchall()
+    return [row_to_dict(row) for row in rows]
+
+
+def run_id_for_daily_date(conn, selected_date: str | None) -> int | None:
+    if not selected_date:
+        return latest_run_id(conn)
+    row = conn.execute(
+        """
+        SELECT id
+        FROM recommendation_runs
+        WHERE status = 'ok' AND substr(generated_at, 1, 10) = ?
+        ORDER BY id DESC
+        LIMIT 1
+        """,
+        (selected_date,),
+    ).fetchone()
+    return int(row["id"]) if row else None
+
+
+def public_daily_for_date(conn, selected_date: str | None = None, limit: int = 5) -> dict[str, Any]:
+    run_id = run_id_for_daily_date(conn, selected_date)
+    history = daily_history_runs(conn)
+    if run_id is None:
+        return {"date": selected_date, "run_id": None, "history": history, "items": []}
+    run = conn.execute("SELECT id, generated_at FROM recommendation_runs WHERE id = ?", (run_id,)).fetchone()
+    items = items_for_category(conn, "daily", run_id)
+    items = sorted(items, key=lambda item: item.get("fit_score") or 0, reverse=True)[:limit]
+    generated_at = run["generated_at"] if run else None
+    return {
+        "date": str(generated_at or selected_date or "")[:10] or selected_date,
+        "generated_at": generated_at,
+        "run_id": run_id,
+        "history": history,
+        "items": items,
+    }
+
+
 def latest_categories(conn) -> dict[str, list[dict[str, Any]]]:
     run_id = latest_run_id(conn)
     if run_id is None:

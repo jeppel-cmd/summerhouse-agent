@@ -33,9 +33,20 @@
 
   <main class="today-main">
     <div id="todayStatus" class="global-status"></div>
-    <section id="todayList" class="today-list" aria-label="Dagens top 5">
-      <div class="loading">Henter dagens top 5...</div>
-    </section>
+    <div class="today-shell">
+      <aside class="today-history" aria-label="Tidligere dage">
+        <div class="today-history-head">
+          <span class="eyebrow">Historik</span>
+          <h2>Tidligere dage</h2>
+        </div>
+        <div id="todayHistoryList" class="today-history-list">
+          <div class="loading">Henter historik...</div>
+        </div>
+      </aside>
+      <section id="todayList" class="today-list" aria-label="Dagens top 5">
+        <div class="loading">Henter dagens top 5...</div>
+      </section>
+    </div>
   </main>
 
   <div id="toast" class="toast" aria-live="polite"></div>

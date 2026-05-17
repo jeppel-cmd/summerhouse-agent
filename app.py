@@ -93,9 +93,9 @@ def api_recommendations():
 
 @app.get("/api/public/today")
 def api_public_today():
+    selected_date = request.args.get("date")
     with get_db() as conn:
-        items = recommendations.items_for_category(conn, "daily")
-    return jsonify(sorted(items, key=lambda item: item.get("fit_score") or 0, reverse=True)[:5])
+        return jsonify(recommendations.public_daily_for_date(conn, selected_date))
 
 
 @app.post("/api/recommendations/generate")
