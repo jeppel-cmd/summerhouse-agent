@@ -98,3 +98,29 @@ def test_public_daily_for_date_returns_history_and_selected_day() -> None:
     assert len(payload["items"]) == 3
     assert [entry["date"] for entry in payload["history"]] == ["2026-05-17", "2026-05-16"]
     assert [entry["id"] for entry in payload["history"]] == [3, 2]
+
+
+
+def test_diverse_daily_rows_prefers_unseen_even_with_lower_scores() -> None:
+    rows = [
+        {
+            "listing_id": "seen-high",
+            "fit_score": 95,
+            "postal_code": 4500,
+            "asking_price": 2100000,
+            "value_score": 80,
+            "score_components": {"estimated_public_transport_minutes": 95},
+        },
+        {
+            "listing_id": "fresh-lower",
+            "fit_score": 73,
+            "postal_code": 4560,
+            "asking_price": 2400000,
+            "value_score": 70,
+            "score_components": {"estimated_public_transport_minutes": 110},
+        },
+    ]
+
+    picked = recommendations.diverse_daily_rows(rows, limit=1, seen_ids={"seen-high"})
+
+    assert [item["listing_id"] for item in picked] == ["fresh-lower"]

@@ -113,7 +113,6 @@ function topCard(item, index) {
           <h2>${esc(item.address || "Ukendt adresse")}</h2>
           <p>${esc([item.postal_code, item.city].filter(Boolean).join(" "))}${item.region ? ` · ${esc(item.region)}` : ""}</p>
         </div>
-        <div class="score ${scoreTone(item.fit_score)}"><b>${item.fit_score != null ? Math.round(item.fit_score) : "-"}</b><span>match</span></div>
       </div>
       <div class="badge-row">${badges(item)}</div>
       <div class="metrics today-metrics">
@@ -176,7 +175,7 @@ function renderHistory() {
 
 function renderToday() {
   const target = document.getElementById("todayList");
-  const topFive = [...todayItems].sort((a, b) => (b.fit_score || 0) - (a.fit_score || 0)).slice(0, 5);
+  const topFive = todayItems.slice(0, 5);
   document.getElementById("todayDate").textContent = prettyDate(todayPayload.date);
   document.getElementById("todayCount").textContent = `${topFive.length}/5`;
   document.getElementById("todayUpdated").textContent = generatedTime(todayPayload.generated_at);

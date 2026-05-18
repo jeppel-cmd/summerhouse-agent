@@ -20,6 +20,8 @@ def test_today_landing_page_route_and_assets_exist() -> None:
     assert 'todayPayload.items' in today_js
     assert 'renderHistory' in today_js
     assert '.slice(0, 5)' in today_js
+    assert 'fit_score || 0' not in today_js
+    assert 'match</span>' not in today_js
     assert '/api/watchlist' not in today_js
     assert '/api/listings/${id}/watch' not in today_js
     assert 'data-action="favorite"' not in today_js

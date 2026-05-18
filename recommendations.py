@@ -801,29 +801,66 @@ def merge_unique(*groups: list[dict[str, Any]], limit: int) -> list[dict[str, An
     return merged
 
 
-def diverse_daily_rows(rows: list[dict[str, Any]], limit: int) -> list[dict[str, Any]]:
+def recent_daily_listing_ids(conn, days: int = 30) -> set[str]:
+    """Listings already shown on the daily shortlist recently.
+
+    The daily list is meant to help Jeppe see *different* houses over time, not
+    simply repeat the highest-scoring five. Keep history in recommendation_items
+    so previous /today dates remain browsable, but avoid reusing recent daily
+    picks when generating a new run.
+    """
+    since = (datetime.now() - timedelta(days=days)).isoformat(timespec="seconds")
+    rows = conn.execute(
+        """
+        SELECT DISTINCT ri.listing_id
+        FROM recommendation_items ri
+        JOIN recommendation_runs r ON r.id = ri.run_id
+        WHERE ri.category = 'daily'
+          AND r.status = 'ok'
+          AND r.generated_at >= ?
+        """,
+        (since,),
+    ).fetchall()
+    return {str(row["listing_id"]) for row in rows}
+
+
+def diverse_daily_rows(rows: list[dict[str, Any]], limit: int, seen_ids: set[str] | None = None) -> list[dict[str, Any]]:
+    seen_ids = seen_ids or set()
     sorted_rows = sorted(rows, key=lambda row: row["fit_score"], reverse=True)
-    north = [
-        row for row in sorted_rows
-        if (row.get("postal_code") or 0) >= 3000 and (row.get("postal_code") or 0) <= 3699
-    ]
-    premium = [
-        row for row in sorted_rows
-        if (row.get("asking_price") or 0) >= 3500000
-    ]
-    close = [
-        row for row in sorted_rows
-        if (row.get("score_components") or {}).get("estimated_public_transport_minutes")
-        and (row["score_components"]["estimated_public_transport_minutes"] <= 120)
-    ]
-    return merge_unique(
-        sorted_rows[:6],
-        north[:2],
-        premium[:2],
-        close[:2],
-        sorted_rows,
-        limit=limit,
-    )
+    fresh_rows = [row for row in sorted_rows if str(row["listing_id"]) not in seen_ids]
+
+    def pick_from(pool: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        north = [
+            row for row in pool
+            if (row.get("postal_code") or 0) >= 3000 and (row.get("postal_code") or 0) <= 3699
+        ]
+        budget = [
+            row for row in pool
+            if (row.get("asking_price") or 0) <= 3_000_000
+        ]
+        close = [
+            row for row in pool
+            if (row.get("score_components") or {}).get("estimated_public_transport_minutes")
+            and (row["score_components"]["estimated_public_transport_minutes"] <= 120)
+        ]
+        price_value = [row for row in pool if (row.get("value_score") or 0) >= 65]
+        return merge_unique(
+            pool[:3],
+            budget[:2],
+            north[:2],
+            close[:2],
+            price_value[:2],
+            pool,
+            limit=limit,
+        )
+
+    fresh_selection = pick_from(fresh_rows)
+    if len(fresh_selection) >= limit:
+        return fresh_selection
+
+    # Fallback: if the fresh pool is too small, fill with the strongest recent
+    # repeats rather than returning fewer than five houses.
+    return merge_unique(fresh_selection, pick_from(sorted_rows), limit=limit)
 
 
 def category_items(conn, rows: list[dict[str, Any]], prefs: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
@@ -833,8 +870,10 @@ def category_items(conn, rows: list[dict[str, Any]], prefs: dict[str, Any]) -> d
     ai_limit = prefs.get("ai_highlights_limit", 10)
     rows = [row for row in rows if matches_preference_filters(row, prefs)]
     eligible = [row for row in rows if row["fit_score"] >= threshold]
+    daily_candidates = [row for row in rows if row["fit_score"] >= threshold - 15]
     sorted_rows = sorted(eligible, key=lambda row: row["fit_score"], reverse=True)
     drop_ids = price_drop_listing_ids(conn)
+    recently_seen_daily = recent_daily_listing_ids(conn)
     ai_rows = []
     for row in rows:
         ai_score, ai_reasons = ai_highlight_score(row, prefs)
@@ -846,7 +885,7 @@ def category_items(conn, rows: list[dict[str, Any]], prefs: dict[str, Any]) -> d
             ai_rows.append(enriched)
 
     return {
-        "daily": diverse_daily_rows(eligible, daily_limit),
+        "daily": diverse_daily_rows(daily_candidates, daily_limit, recently_seen_daily),
         "weekly": sorted_rows[:weekly_limit],
         "ai_highlights": sorted(
             ai_rows,
@@ -975,8 +1014,7 @@ def public_daily_for_date(conn, selected_date: str | None = None, limit: int = 5
     if run_id is None:
         return {"date": selected_date, "run_id": None, "history": history, "items": []}
     run = conn.execute("SELECT id, generated_at FROM recommendation_runs WHERE id = ?", (run_id,)).fetchone()
-    items = items_for_category(conn, "daily", run_id)
-    items = sorted(items, key=lambda item: item.get("fit_score") or 0, reverse=True)[:limit]
+    items = items_for_category(conn, "daily", run_id)[:limit]
     generated_at = run["generated_at"] if run else None
     return {
         "date": str(generated_at or selected_date or "")[:10] or selected_date,
