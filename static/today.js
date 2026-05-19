@@ -120,8 +120,8 @@ function topCard(item, index) {
         ${metric("Kr/m²", item.price_per_m2 ? `${fmt(item.price_per_m2)} kr.` : "-")}
         ${metric("Areal", item.size_m2 ? `${fmt(item.size_m2)} m²` : "-")}
         ${metric("Værelser", item.rooms ?? "-")}
-        ${metric("Rejse", travelLabel(item))}
       </div>
+      <div class="today-travel"><span>Rejsetid</span><strong>${esc(travelLabel(item))}</strong></div>
       ${geoRiskSummary(item)}
       ${reasons(item, 4)}
       <div class="card-actions">

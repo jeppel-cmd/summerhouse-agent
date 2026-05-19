@@ -811,7 +811,32 @@ body.modal-open { overflow: hidden; }
   padding: 20px;
 }
 .today-rank-body .card-head h2 { font-size: 25px; line-height: 1.08; letter-spacing: -.025em; }
-.today-metrics { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.today-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.today-metrics .metric strong { overflow-wrap: anywhere; }
+.today-travel {
+  align-items: center;
+  background: #eef6f2;
+  border: 1px solid #d7e2df;
+  border-radius: 14px;
+  color: #23443d;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  justify-content: space-between;
+  padding: 9px 11px;
+}
+.today-travel span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.today-travel strong {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
 
 @media (max-width: 980px) {
   .today-rank-card { grid-template-columns: 58px 1fr; }
