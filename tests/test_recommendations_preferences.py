@@ -110,6 +110,38 @@ def test_three_bedrooms_is_interpreted_conservatively_from_rooms_field():
     assert any("3 soveværelser" in reason.lower() for reason in uncertain["reasons"])
 
 
+def test_move_in_ready_budget_up_to_three_million_is_not_penalized_like_over_budget():
+    medians = {"prefix:45": 25_000, "region:Region Sjælland": 25_000}
+    ideal = recommendations.score_listing(listing(asking_price=2_300_000), prefs(), medians, {})
+    move_in_ready = recommendations.score_listing(listing(asking_price=2_800_000), prefs(), medians, {})
+    over_budget = recommendations.score_listing(listing(asking_price=3_250_000), prefs(), medians, {})
+
+    assert move_in_ready["components"]["price_fit_score"] >= ideal["components"]["price_fit_score"] - 5
+    assert move_in_ready["components"]["price_fit_score"] >= 90
+    assert move_in_ready["components"]["price_fit_score"] > over_budget["components"]["price_fit_score"]
+    assert any("maks. 3 mio" in reason.lower() for reason in move_in_ready["reasons"])
+
+
+def test_public_transport_near_two_hours_is_penalized_more_than_close_hops():
+    medians = {"prefix:36": 25_000, "region:Region Hovedstaden": 25_000}
+    score = recommendations.score_listing(
+        listing(
+            postal_code=3630,
+            city="Jægerspris",
+            latitude=55.92216,
+            longitude=11.92616,
+        ),
+        prefs(),
+        medians,
+        {},
+    )
+
+    public_minutes = score["components"]["estimated_public_transport_minutes"]
+    assert public_minutes is not None and 105 <= public_minutes <= 120
+    assert score["components"]["travel_score"] <= 70
+    assert any("offentlig transport" in reason.lower() for reason in score["reasons"])
+
+
 def test_slightly_long_public_transport_warns_without_hard_excluding():
     medians = {"prefix:45": 25_000, "region:Region Sjælland": 25_000}
     score = recommendations.score_listing(
@@ -121,5 +153,5 @@ def test_slightly_long_public_transport_warns_without_hard_excluding():
 
     public_minutes = score["components"]["estimated_public_transport_minutes"]
     assert public_minutes is not None and public_minutes > 120
-    assert score["components"]["travel_score"] >= 45
+    assert 25 <= score["components"]["travel_score"] <= 45
     assert any("lidt over" in reason.lower() or "over 2 timer" in reason.lower() for reason in score["reasons"])

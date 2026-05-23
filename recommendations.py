@@ -12,7 +12,7 @@ import flood_risk
 import preferences as preference_store
 
 
-SCORE_VERSION = "deterministic-v2"
+SCORE_VERSION = "deterministic-v3"
 CPH_CENTRAL_LAT = 55.6728
 CPH_CENTRAL_LON = 12.5655
 
@@ -150,19 +150,22 @@ def travel_score(listing: dict[str, Any], reasons: list[str]) -> tuple[float, di
     if public_minutes <= 90 and car_minutes <= 80:
         reasons.append("Rejseproxy ser stærk ud fra København H.")
         return 95, estimates
+    if public_minutes <= 105 and car_minutes <= 90:
+        return 82, estimates
     if public_minutes <= 120 and car_minutes <= 100:
-        return 84, estimates
+        reasons.append("Rejseproxy nærmer sig 2 timer med offentlig transport, så den skal være stærk på andre parametre.")
+        return 68, estimates
     if public_minutes <= 135 and car_minutes <= 115:
-        reasons.append("Rejseproxy er lidt over 2 timer med offentlig transport, så den markeres som advarsel frem for at blive sorteret fra.")
-        return 66, estimates
+        reasons.append("Rejseproxy er lidt over 2 timer med offentlig transport og trækker tydeligt ned.")
+        return 42, estimates
     if public_minutes <= 150 and car_minutes <= 125:
-        reasons.append("Rejseproxy er over 2 timer med offentlig transport og bør tjekkes manuelt.")
-        return 48, estimates
+        reasons.append("Rejseproxy er over 2 timer med offentlig transport og bør kun med som wildcard.")
+        return 28, estimates
     if public_minutes <= 170:
-        reasons.append("Rejseproxy er sandsynligvis over ønsket om maks. to timer med offentlig transport.")
-        return 35, estimates
+        reasons.append("Rejseproxy er sandsynligvis for langt over ønsket om maks. to timer med offentlig transport.")
+        return 15, estimates
     reasons.append("Rejseproxy ser for lang ud fra København H.")
-    return 12, estimates
+    return 8, estimates
 
 
 def nature_water_score(listing: dict[str, Any], raw: dict[str, Any], reasons: list[str]) -> float:
@@ -310,8 +313,8 @@ def price_fit_score(listing: dict[str, Any], prefs: dict[str, Any], raw: dict[st
         reasons.append("Renoveringsprojekt under ca. 2 mio. kr., som kan være interessant hvis standen matcher prisen.")
         return 90
     if price <= move_in_ready_max:
-        reasons.append("Pris er under maks. 3 mio. kr., men over idealbudgettet.")
-        return 68
+        reasons.append("Pris er under maks. 3 mio. kr. for et indflytningsklart hus og får ikke længere særskilt prisstraf.")
+        return 95
     if price <= move_in_ready_max * 1.15:
         reasons.append("Pris er over 3 mio. kr.; kun interessant som prisfaldskandidat eller hvis alt andet er meget stærkt.")
         return 34
