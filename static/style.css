@@ -773,6 +773,42 @@ body.modal-open { overflow: hidden; }
 .today-list {
   counter-reset: today;
   display: grid;
+  gap: 30px;
+}
+.today-region-section {
+  display: grid;
+  gap: 14px;
+}
+.today-region-head {
+  align-items: end;
+  background: rgba(255,253,248,.9);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  padding: 17px 18px;
+}
+.today-region-head h2 {
+  font-size: clamp(28px, 4vw, 44px);
+  letter-spacing: -.05em;
+  line-height: 1;
+}
+.today-region-head p {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 5px;
+}
+.today-region-head strong {
+  background: #17211f;
+  border-radius: 999px;
+  color: white;
+  flex: 0 0 auto;
+  font-size: 13px;
+  padding: 8px 11px;
+}
+.today-region-cards {
+  display: grid;
   gap: 18px;
 }
 .today-rank-card {
@@ -852,6 +888,7 @@ body.modal-open { overflow: hidden; }
   .today-nav-actions { width: 100%; }
   .today-link, .today-nav-actions button { text-align: center; flex: 1; }
   .today-hero-meta { grid-template-columns: 1fr; }
+  .today-region-head { align-items: start; flex-direction: column; }
   .today-rank-card { grid-template-columns: 1fr; }
   .today-rank-number { min-height: 50px; }
   .today-rank-image { grid-column: auto; }

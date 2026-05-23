@@ -2,7 +2,7 @@
 
 const kr = new Intl.NumberFormat("da-DK");
 let todayItems = [];
-let todayPayload = { history: [], date: null, generated_at: null };
+let todayPayload = { history: [], date: null, generated_at: null, regions: [] };
 let selectedDate = new URLSearchParams(window.location.search).get("date") || null;
 
 function esc(value) {
@@ -132,6 +132,25 @@ function topCard(item, index) {
   </article>`;
 }
 
+function renderRegionSection(group) {
+  const items = (group.items || []).slice(0, 5);
+  return `<section class="today-region-section" id="region-${esc(group.key || group.category || group.label)}">
+    <div class="today-region-head">
+      <div>
+        <span class="eyebrow">Dagens top 5 · ${esc(group.label || "Område")}</span>
+        <h2>${esc(group.label || "Område")}</h2>
+        <p>${esc(group.subtitle || "")}</p>
+      </div>
+      <strong>${items.length}/5 huse</strong>
+    </div>
+    <div class="today-region-cards">
+      ${items.length
+        ? items.map((item, index) => topCard(item, index)).join("")
+        : `<div class="empty">Ingen stærke huse i denne region for denne dato.</div>`}
+    </div>
+  </section>`;
+}
+
 function prettyDate(value) {
   if (!value) return "Dagens liste";
   const parsed = new Date(`${value}T12:00:00`);
@@ -175,13 +194,21 @@ function renderHistory() {
 
 function renderToday() {
   const target = document.getElementById("todayList");
+  const regionGroups = todayPayload.regions || [];
+  const useRegions = regionGroups.length > 0;
   const topFive = todayItems.slice(0, 5);
+  const shownCount = useRegions
+    ? regionGroups.reduce((sum, group) => sum + (group.items || []).slice(0, 5).length, 0)
+    : topFive.length;
+  const targetCount = useRegions ? regionGroups.length * 5 : 5;
   document.getElementById("todayDate").textContent = prettyDate(todayPayload.date);
-  document.getElementById("todayCount").textContent = `${topFive.length}/5`;
+  document.getElementById("todayCount").textContent = `${shownCount}/${targetCount}`;
   document.getElementById("todayUpdated").textContent = generatedTime(todayPayload.generated_at);
-  target.innerHTML = topFive.length
-    ? topFive.map((item, index) => topCard(item, index)).join("")
-    : `<div class="empty">Der er ingen dagsliste for denne dato endnu.</div>`;
+  target.innerHTML = useRegions
+    ? regionGroups.map(renderRegionSection).join("")
+    : (topFive.length
+      ? topFive.map((item, index) => topCard(item, index)).join("")
+      : `<div class="empty">Der er ingen dagsliste for denne dato endnu.</div>`);
   renderHistory();
 }
 
@@ -197,7 +224,7 @@ async function loadToday(date = selectedDate) {
     renderToday();
   } catch (error) {
     setStatus(error.message, "error");
-    document.getElementById("todayList").innerHTML = `<div class="empty">Kunne ikke hente dagens top 5: ${esc(error.message)}</div>`;
+    document.getElementById("todayList").innerHTML = `<div class="empty">Kunne ikke hente dagens regionale top 5: ${esc(error.message)}</div>`;
   } finally {
     document.getElementById("todayRefresh").disabled = false;
   }

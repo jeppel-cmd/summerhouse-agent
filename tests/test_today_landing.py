@@ -12,12 +12,15 @@ def test_today_landing_page_route_and_assets_exist() -> None:
     index_html = (ROOT / "templates" / "index.html").read_text()
 
     assert '@app.get("/today")' in app_source
-    assert 'Dagens top 5' in today_html
+    assert 'Dagens regionale top 5' in today_html
+    assert 'Nord, Syd, Øst og Vest' in today_html
     assert '/static/today.js' in today_html
     assert 'href="/today"' in index_html
     assert '/api/public/today' in today_js
     assert 'date=${encodeURIComponent(selectedDate)}' in today_js
     assert 'todayPayload.items' in today_js
+    assert 'todayPayload.regions' in today_js
+    assert 'renderRegionSection' in today_js
     assert 'renderHistory' in today_js
     assert '.slice(0, 5)' in today_js
     assert 'fit_score || 0' not in today_js

@@ -4,6 +4,7 @@ import json
 import math
 import re
 import statistics
+from collections import Counter
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
@@ -15,6 +16,34 @@ import preferences as preference_store
 SCORE_VERSION = "deterministic-v3"
 CPH_CENTRAL_LAT = 55.6728
 CPH_CENTRAL_LON = 12.5655
+
+DAILY_REGIONS = (
+    {
+        "key": "north",
+        "category": "daily_north",
+        "label": "Nord",
+        "subtitle": "Nordsjælland, nordkysten og Hornsherred",
+    },
+    {
+        "key": "south",
+        "category": "daily_south",
+        "label": "Syd",
+        "subtitle": "Sydsjælland, Møn, Falster og Lolland",
+    },
+    {
+        "key": "east",
+        "category": "daily_east",
+        "label": "Øst",
+        "subtitle": "Køge, Stevns og den østlige Sjællandskyst",
+    },
+    {
+        "key": "west",
+        "category": "daily_west",
+        "label": "Vest",
+        "subtitle": "Isefjord, Odsherred, Holbæk og Vestsjælland",
+    },
+)
+DAILY_REGION_CATEGORIES = tuple(region["category"] for region in DAILY_REGIONS)
 
 
 def clamp(value: float, low: float = 0, high: float = 100) -> float:
@@ -56,6 +85,27 @@ def text_blob(listing: dict[str, Any], raw: dict[str, Any]) -> str:
 def postal_code(listing: dict[str, Any]) -> int | None:
     value = listing.get("postal_code")
     return int(value) if value not in ("", None) else None
+
+
+def daily_region_for(listing: dict[str, Any]) -> str | None:
+    """Return the public daily shortlist region for a Sjælland-area listing.
+
+    The regions are intentionally broad buying buckets rather than official
+    administrative boundaries.  The north bucket is explicit so Nordsjælland
+    does not disappear behind cheaper western/eastern Sjælland picks.
+    """
+    postal = postal_code(listing)
+    if postal is None:
+        return None
+    if 3000 <= postal <= 3699:
+        return "north"
+    if 4700 <= postal <= 4999:
+        return "south"
+    if 4600 <= postal <= 4699:
+        return "east"
+    if 4000 <= postal <= 4599:
+        return "west"
+    return None
 
 
 def is_sjaelland_area(listing: dict[str, Any]) -> bool:
@@ -813,21 +863,63 @@ def recent_daily_listing_ids(conn, days: int = 30) -> set[str]:
     picks when generating a new run.
     """
     since = (datetime.now() - timedelta(days=days)).isoformat(timespec="seconds")
+    daily_categories = ("daily", *DAILY_REGION_CATEGORIES)
+    placeholders = ",".join("?" for _ in daily_categories)
     rows = conn.execute(
-        """
+        f"""
         SELECT DISTINCT ri.listing_id
         FROM recommendation_items ri
         JOIN recommendation_runs r ON r.id = ri.run_id
-        WHERE ri.category = 'daily'
+        WHERE ri.category IN ({placeholders})
           AND r.status = 'ok'
           AND r.generated_at >= ?
         """,
-        (since,),
+        (*daily_categories, since),
     ).fetchall()
     return {str(row["listing_id"]) for row in rows}
 
 
-def diverse_daily_rows(rows: list[dict[str, Any]], limit: int, seen_ids: set[str] | None = None) -> list[dict[str, Any]]:
+def locality_key(row: dict[str, Any]) -> str:
+    return str(row.get("city") or row.get("postal_code") or row.get("listing_id") or "unknown").strip().lower()
+
+
+def merge_with_locality_variety(
+    preferred: list[dict[str, Any]],
+    fallback: list[dict[str, Any]],
+    limit: int,
+    max_per_locality: int,
+) -> list[dict[str, Any]]:
+    """Pick from preferred/fallback while avoiding one town owning a whole section."""
+    counts: Counter[str] = Counter()
+    selected: list[dict[str, Any]] = []
+    skipped: list[dict[str, Any]] = []
+    seen: set[str] = set()
+
+    for item in [*preferred, *fallback]:
+        listing_id = str(item["listing_id"])
+        if listing_id in seen:
+            continue
+        seen.add(listing_id)
+        key = locality_key(item)
+        if counts[key] < max_per_locality:
+            selected.append(item)
+            counts[key] += 1
+            if len(selected) >= limit:
+                return selected
+        else:
+            skipped.append(item)
+
+    # If a region genuinely only has a few good towns today, fill the last slots
+    # rather than returning fewer than five.
+    return merge_unique(selected, skipped, limit=limit)
+
+
+def diverse_daily_rows(
+    rows: list[dict[str, Any]],
+    limit: int,
+    seen_ids: set[str] | None = None,
+    max_per_locality: int | None = None,
+) -> list[dict[str, Any]]:
     seen_ids = seen_ids or set()
     sorted_rows = sorted(rows, key=lambda row: row["fit_score"], reverse=True)
     fresh_rows = [row for row in sorted_rows if str(row["listing_id"]) not in seen_ids]
@@ -847,7 +939,7 @@ def diverse_daily_rows(rows: list[dict[str, Any]], limit: int, seen_ids: set[str
             and (row["score_components"]["estimated_public_transport_minutes"] <= 120)
         ]
         price_value = [row for row in pool if (row.get("value_score") or 0) >= 65]
-        return merge_unique(
+        preferred = merge_unique(
             pool[:3],
             budget[:2],
             north[:2],
@@ -856,6 +948,9 @@ def diverse_daily_rows(rows: list[dict[str, Any]], limit: int, seen_ids: set[str
             pool,
             limit=limit,
         )
+        if max_per_locality:
+            return merge_with_locality_variety(preferred, pool, limit, max_per_locality)
+        return preferred
 
     fresh_selection = pick_from(fresh_rows)
     if len(fresh_selection) >= limit:
@@ -889,6 +984,15 @@ def category_items(conn, rows: list[dict[str, Any]], prefs: dict[str, Any]) -> d
 
     return {
         "daily": diverse_daily_rows(daily_candidates, daily_limit, recently_seen_daily),
+        **{
+            region["category"]: diverse_daily_rows(
+                [row for row in daily_candidates if daily_region_for(row) == region["key"]],
+                daily_limit,
+                recently_seen_daily,
+                max_per_locality=2,
+            )
+            for region in DAILY_REGIONS
+        },
         "weekly": sorted_rows[:weekly_limit],
         "ai_highlights": sorted(
             ai_rows,
@@ -973,12 +1077,22 @@ def latest_run_id(conn) -> int | None:
 
 
 def daily_history_runs(conn, limit: int = 30) -> list[dict[str, Any]]:
+    daily_categories = ("daily", *DAILY_REGION_CATEGORIES)
+    category_placeholders = ",".join("?" for _ in daily_categories)
+    region_placeholders = ",".join("?" for _ in DAILY_REGION_CATEGORIES)
     rows = conn.execute(
-        """
+        f"""
         SELECT r.id, substr(r.generated_at, 1, 10) AS date, r.generated_at,
-               COUNT(ri.id) AS item_count
+               COUNT(DISTINCT CASE
+                   WHEN ri.category IN ({region_placeholders})
+                   THEN ri.category || ':' || ri.listing_id
+               END) AS regional_item_count,
+               COUNT(DISTINCT CASE
+                   WHEN ri.category = 'daily'
+                   THEN ri.listing_id
+               END) AS daily_item_count
         FROM recommendation_runs r
-        JOIN recommendation_items ri ON ri.run_id = r.id AND ri.category = 'daily'
+        JOIN recommendation_items ri ON ri.run_id = r.id AND ri.category IN ({category_placeholders})
         WHERE r.status = 'ok'
           AND r.id IN (
             SELECT MAX(id)
@@ -990,9 +1104,16 @@ def daily_history_runs(conn, limit: int = 30) -> list[dict[str, Any]]:
         ORDER BY r.generated_at DESC
         LIMIT ?
         """,
-        (limit,),
+        (*DAILY_REGION_CATEGORIES, *daily_categories, limit),
     ).fetchall()
-    return [row_to_dict(row) for row in rows]
+    history = []
+    for row in rows:
+        item = row_to_dict(row)
+        regional_count = item.pop("regional_item_count", 0) or 0
+        daily_count = item.pop("daily_item_count", 0) or 0
+        item["item_count"] = regional_count or daily_count
+        history.append(item)
+    return history
 
 
 def run_id_for_daily_date(conn, selected_date: str | None) -> int | None:
@@ -1011,13 +1132,31 @@ def run_id_for_daily_date(conn, selected_date: str | None) -> int | None:
     return int(row["id"]) if row else None
 
 
+def public_daily_regions_for_run(conn, run_id: int, limit: int = 5) -> list[dict[str, Any]]:
+    groups: list[dict[str, Any]] = []
+    for region in DAILY_REGIONS:
+        items = items_for_category(conn, region["category"], run_id)[:limit]
+        groups.append(
+            {
+                "key": region["key"],
+                "category": region["category"],
+                "label": region["label"],
+                "subtitle": region["subtitle"],
+                "items": items,
+                "count": len(items),
+            }
+        )
+    return groups if any(group["items"] for group in groups) else []
+
+
 def public_daily_for_date(conn, selected_date: str | None = None, limit: int = 5) -> dict[str, Any]:
     run_id = run_id_for_daily_date(conn, selected_date)
     history = daily_history_runs(conn)
     if run_id is None:
-        return {"date": selected_date, "run_id": None, "history": history, "items": []}
+        return {"date": selected_date, "run_id": None, "history": history, "items": [], "regions": []}
     run = conn.execute("SELECT id, generated_at FROM recommendation_runs WHERE id = ?", (run_id,)).fetchone()
     items = items_for_category(conn, "daily", run_id)[:limit]
+    regions = public_daily_regions_for_run(conn, run_id, limit)
     generated_at = run["generated_at"] if run else None
     return {
         "date": str(generated_at or selected_date or "")[:10] or selected_date,
@@ -1025,15 +1164,17 @@ def public_daily_for_date(conn, selected_date: str | None = None, limit: int = 5
         "run_id": run_id,
         "history": history,
         "items": items,
+        "regions": regions,
     }
 
 
 def latest_categories(conn) -> dict[str, list[dict[str, Any]]]:
     run_id = latest_run_id(conn)
+    all_categories = ("daily", *DAILY_REGION_CATEGORIES, "weekly", "ai_highlights", "price_drops", "hidden_gems", "open_houses")
     if run_id is None:
-        return {"daily": [], "weekly": [], "ai_highlights": [], "price_drops": [], "hidden_gems": [], "open_houses": []}
+        return {category: [] for category in all_categories}
     result: dict[str, list[dict[str, Any]]] = {}
-    for category in ("daily", "weekly", "ai_highlights", "price_drops", "hidden_gems", "open_houses"):
+    for category in all_categories:
         result[category] = items_for_category(conn, category, run_id)
     return result
 

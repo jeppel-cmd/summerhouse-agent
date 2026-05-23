@@ -96,8 +96,38 @@ def test_public_daily_for_date_returns_history_and_selected_day() -> None:
     assert payload["date"] == "2026-05-16"
     assert payload["run_id"] == 2
     assert len(payload["items"]) == 3
+    assert payload["regions"] == []
     assert [entry["date"] for entry in payload["history"]] == ["2026-05-17", "2026-05-16"]
     assert [entry["id"] for entry in payload["history"]] == [3, 2]
+
+
+def test_daily_region_for_covers_public_quadrants() -> None:
+    assert recommendations.daily_region_for({"postal_code": 3100}) == "north"
+    assert recommendations.daily_region_for({"postal_code": 4791}) == "south"
+    assert recommendations.daily_region_for({"postal_code": 4671}) == "east"
+    assert recommendations.daily_region_for({"postal_code": 4500}) == "west"
+    assert recommendations.daily_region_for({"postal_code": 2791}) is None
+
+
+def test_public_daily_for_date_returns_regional_sections_when_present() -> None:
+    conn = setup_history_db()
+    regional = [
+        (3, "daily_north", "a", 1),
+        (3, "daily_south", "b", 1),
+        (3, "daily_east", "c", 1),
+    ]
+    for run_id, category, listing_id, rank in regional:
+        conn.execute(
+            "INSERT INTO recommendation_items (run_id, category, listing_id, rank, fit_score, reasons_json, created_at) VALUES (?, ?, ?, ?, 90, '[]', '2026-05-17T10:00:00')",
+            (run_id, category, listing_id, rank),
+        )
+    conn.commit()
+
+    payload = recommendations.public_daily_for_date(conn, "2026-05-17")
+
+    assert [group["key"] for group in payload["regions"]] == ["north", "south", "east", "west"]
+    assert [group["count"] for group in payload["regions"]] == [1, 1, 1, 0]
+    assert payload["history"][0]["item_count"] == 3
 
 
 
@@ -124,3 +154,44 @@ def test_diverse_daily_rows_prefers_unseen_even_with_lower_scores() -> None:
     picked = recommendations.diverse_daily_rows(rows, limit=1, seen_ids={"seen-high"})
 
     assert [item["listing_id"] for item in picked] == ["fresh-lower"]
+
+
+def test_diverse_daily_rows_can_cap_single_city_dominance() -> None:
+    rows = [
+        {
+            "listing_id": f"j-{idx}",
+            "fit_score": 100 - idx,
+            "postal_code": 3630,
+            "city": "Jægerspris",
+            "asking_price": 1_500_000,
+            "value_score": 80,
+            "score_components": {"estimated_public_transport_minutes": 100},
+        }
+        for idx in range(4)
+    ] + [
+        {
+            "listing_id": "gilleleje",
+            "fit_score": 80,
+            "postal_code": 3250,
+            "city": "Gilleleje",
+            "asking_price": 2_900_000,
+            "value_score": 60,
+            "score_components": {"estimated_public_transport_minutes": 113},
+        },
+        {
+            "listing_id": "vejby",
+            "fit_score": 78,
+            "postal_code": 3210,
+            "city": "Vejby",
+            "asking_price": 2_500_000,
+            "value_score": 58,
+            "score_components": {"estimated_public_transport_minutes": 122},
+        },
+    ]
+
+    picked = recommendations.diverse_daily_rows(rows, limit=5, max_per_locality=2)
+    picked_ids = [item["listing_id"] for item in picked]
+
+    assert picked_ids[:2] == ["j-0", "j-1"]
+    assert "gilleleje" in picked_ids
+    assert "vejby" in picked_ids
